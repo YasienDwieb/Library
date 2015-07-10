@@ -1,0 +1,897 @@
+﻿<html>
+  <head>
+    <link href="http://nettiers.net/common/styles.css" rel="stylesheet" type="text/css" />
+    <style>
+				      span.executionTime {font-style: italic; color: #55AEED;}
+	            </style>
+  </head>
+  <body>
+    <table width="100%" border="0" cellspacing="2" cellpadding="2">
+      <tr>
+        <td width="700">
+          <a href="http://code.google.com/p/nettiers/downloads/" target="_blank">
+            <img border="0" src="http://www.nettiers.net/GetFile.aspx?File=Summary_Logo.gif" alt=".netTiers 2.3" />
+          </a>
+          <hr />
+          <div>
+            <a href="http://nettiers.net/">Website</a>
+                                |    
+                             <a href="http://community.codesmithtools.com/nettiers/f/default.aspx">Forums</a>
+                                |    
+                             <a href="http://code.google.com/p/nettiers/">Google Code</a>
+                                |    
+                             <a href="http://code.google.com/p/nettiers/downloads/">Downloads</a></div>
+          <hr />
+          <h2>Generation Report</h2>
+          <div style="width:70%">
+            <span class="content">.netTiers is a set of open source code generation templates that
+                            simplify the tasks of creating customized Application Framework for your Microsoft.Net
+                            applications in just a few minutes. 
+                            <br /><br />
+                            This report shows you a list of all of your selected .net class that were generated.  This report
+                            also shows gives a quick start configuration instructions so that you can get started using .netTiers.
+                            If you need further documentation, please check out the documentation section of this report.
+                         </span>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <table width="100%" border="0" cellspacing="2" cellpadding="2">
+      <tr>
+        <td>
+          <h2>Sections</h2>
+          <ol>
+            <li>
+              <a href="#summary">Summary</a>
+            </li>
+            <li>
+              <a href="#Configuration">Configuration</a>
+            </li>
+            <li>
+              <a href="#documentation">Documentation</a>
+            </li>
+            <li>
+              <a href="#details">Details - Generated Classes</a>
+            </li>
+          </ol>
+        </td>
+      </tr>
+      <tr>
+        <td valign="top" width="100%">
+          <div id="Summary" style="display:inline">
+            <a name="summary" />
+            <h3>Generation Summary <a href="#top" class="calloutlink">Top</a></h3>
+            <span class="docSubHeader">Generated Solution Found: </span>
+            <br />
+            <span class="content">
+              <ul>
+                <li>file:\\\C:\Users\Yasien Dwieb\Desktop\Library2\Library.sln</li>
+              </ul>
+            </span>
+            <table>
+              <tr>
+                <td width="200">Total Object Created</td>
+                <td>200</td>
+              </tr>
+              <tr>
+                <td width="200">Total Errors / Warnings</td>
+                <td>0</td>
+              </tr>
+            </table>
+          </div>
+          <div id="Configuration" style="display:inline">
+            <a name="Configuration" />
+            <h3>.netTiers Quick Configuration <a href="#top" class="calloutlink">Top</a></h3>
+            <p> Below are the steps to to configure the .netTiers components.</p>
+            <p>To Configure your application to use .netTiers, add the following sections to your App / Web config files.
+			
+			 You can find more information on how to set this up at<br /><a href="http://nettiers.net/DocumentationPage.ashx">.netTiers 2.3 Install and Configuration Document @ http://nettiers.net/DocumentationPage.ashx</a></p>
+            <p>1. Add a new section to the configSections</p>
+            <pre>
+  &lt;section name="Library.DAL"
+		type="Library.DAL.Bases.NetTiersServiceSection, Library.DAL"
+		allowDefinition="MachineToApplication"
+		restartOnExternalChanges="true" /&gt;
+</pre>
+            <p>2.  Add an item to the ConnectionStrings Section</p>
+            <pre>
+&lt;connectionStrings&gt;
+  &lt;add name="netTiersConnectionString" connectionString="Data Source=THE-SNIPER;Initial Catalog=Lib;User ID=sa;Password=sa" /&gt;
+&lt;/connectionStrings&gt;
+</pre>
+            <p>3.  Add the netTierService configuration section to your configuration file. Comment / Uncomment which provider you plan on using / not using</p>
+            <pre>
+&lt;Library.DAL defaultProvider="SqlNetTiersProvider"&gt;
+  &lt;providers&gt;
+    
+    &lt;add 
+	name="SqlNetTiersProvider" 
+	type="Library.DAL.SqlClient.SqlNetTiersProvider, Library.DAL.SqlClient"
+	connectionStringName="netTiersConnectionString"
+	providerInvariantName="System.Data.SqlClient" 
+	entityFactoryType="Library.BLL.EntityFactory"
+	useEntityFactory="true"
+	enableEntityTracking="false"
+	enableMethodAuthorization="false"
+	useStoredProcedure="false"
+  /&gt;
+    
+  &lt;/providers&gt;
+&lt;/Library.DAL&gt;
+ </pre>
+          </div>
+          <div id="Documentation" style="display:inline">
+            <a name="documentation" />
+            <h3>Documentation <a href="#top" class="calloutlink">Top</a></h3>
+            <a href="http://wiki.nettiers.net">.netTiers 2.0 Getting Started</a>
+            <br />
+            <br />
+            <b>Sample API Usage</b>
+            <br />
+            <table style="border: 1px dashed rgb(255, 153, 0); background-color: rgb(255, 255, 223);" bgcolor="#ffffdf">
+              <tbody>
+                <tr>
+                  <td>
+                    <pre>
+                      <font color="black" face="Courier New" size="2">
+AccountService accountsService = <font color="blue">new</font> AccountsService();<font color="green">
+//GetAll()</font>
+TList&lt;Accounts&gt; accountList = accountsService.GetAll();
+
+<font color="green">//GetPagedl()</font>
+TList&lt;Accounts&gt; accountList = 
+accountsService.GetPaged("IsActive = 1 AND AccountName LIKE 'smi%'");
+
+<font color="green">//GetByFk()</font>
+TList&lt;Accounts&gt; accountList = accountsService.GetByCustomerId(25);
+
+<font color="green">//GetIX()</font>
+TList&lt;Accounts&gt; accountList = accountsService.GetByAccountCreatedDate(<font color="blue">new</font> DateTime("1/1/2006"));<br /><br /><font color="green">
+//Get()</font>
+entity.Entitykey;
+Accounts account = accountsService.Get(entity.EntityKey);
+
+<font color="green">//Insert()</font>
+Account accountEntity = <font color="blue">new</font> Account();
+accountEntity.AccountName = "MyAccountName";
+accountEntity.CreatedDate = DateTime.Now;
+
+accountsService.Insert(accountEntity);
+accountEntity.AccountId <font color="green">// is now populated</font><font color="green">
+//Delete()</font>
+bool result = accountsService.Delete(accountEntity);
+
+<font color="green">//Delete()</font>
+bool result = accountsService.Delete(23);
+
+<font color="green">//Update()</font>
+accountEntity.AccountName = "MyAccountName 2";
+accountsService.Update(accountEntity);
+        
+<font color="green">//GetByManyToManyl()</font>
+TList&lt;Customers&gt; accountList = accountsService.GetCustomers_From_AccountsReceivable();
+					            
+<font color="green">//GetCustomProcedureName()</font>
+TList&lt;Accounts&gt; accountList = accountsService.GetByAccountMaturationDate();
+    
+<font color="green">//DeepLoadByIdl() using PK</font>
+Account account = accountsService.DeepLoadByAccountId(id, <font color="blue">false</font>, DeepLoadType.IncludeChildren, typeof(Customers), typeof(TList&lt;ChartOfAccounts&gt;));<br /><br /><font color="green">//DeepLoadByIdl() using FK</font>
+TList&lt;Account&gt; account = accountsService.DeepLoadByCustomerId(id, <font color="blue">false</font>, DeepLoadType.IncludeChildren, typeof(Customers), typeof(TList&lt;ChartOfAccounts&gt;));<br /><br /><font color="green">//already instatiated objects</font><font color="green">//DeepLoad</font>
+accountsService.DeepLoad(myAccountEntity, <font color="blue">false</font>, DeepLoadType.IncludeChildren, typeof(Customers), typeof(TList&lt;ChartOfAccounts&gt;));<br /><br /><font color="green">
+Response.Write(accountsService.CustomerIdSource.LastName); <font color="green">// is now filled</font>
+Response.Write(accountsService.ChartOfAccountsCollection.Count); <font color="green">// is now filled</font>
+
+//DeepSave</font>
+accountsService.DeepSave(myAccountEntity, <font color="blue">false</font>, DeepSaveType.IncludeChildren, typeof(Customers), typeof(TList&lt;ChartOfAccounts&gt;));<br /><br /></font>
+                    </pre>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <br />
+          </div>
+          <div id="ReportDetails" style="display:inline">
+            <a name="details" />
+            <h3>Report Details <a href="#top" class="calloutlink">Top</a></h3>
+            <ul>
+              <li>
+                <h3>Initialization</h3>
+                <ul>
+                  <li>
+                    <span class="message0">Validating parameters.</span>
+                    <ul />
+                  </li>
+                  <li>
+                    <span class="message0">Loading templates.</span>
+                    <ul />[00:00:01.2600717]<br /></li>
+                  <li>
+                    <span class="message0">Creating folders and copying dependencies.</span>
+                    <ul />
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:04.5177388</span><p /></li>
+              <li>
+                <h3>Common files</h3>
+                <ul>
+                  <li>
+                    <span class="file">ListBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">TList.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">VList.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">WeakRefDictionary.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">TestUtility.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEntity.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEntityId.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEntityKey.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityFactory.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityFactoryBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEntityFactory.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEntityCacheItem.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityCache.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityLocator.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityManager.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BrokenRule.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BrokenRulesList.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CommonRules.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ValidationRuleArgs.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ValidationRuleHandler.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ValidationRuleInfo.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ValidationRules.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityBaseCore.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityKeyBaseCore.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityKeyBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityFilter.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityPropertyComparer.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">GenericTypeConverter.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Procedures.xml</span>
+                  </li>
+                  <li>
+                    <span class="file">Utility.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ITransactionManager.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">TransactionManager.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">FileConfigurationSouce.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">FileConfigurationSouceElement.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">DataRepository.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEntityProvider.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEntityViewProvider.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityProviderBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityProviderBaseCore.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityViewProviderBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityViewProviderBaseCore.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">INetTiersProvider.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">NetTiersProvider.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">NetTiersProviderBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">NetTiersProviderCollection.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">NetTiersServiceSection.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ExpressionParserBase.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlExpressionParser.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlStringBuilder.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlUtil.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">StringTokenizer.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlNetTiersProvider.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">StoredProcedureProvider.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BaseDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BaseDataSourceDesigner.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CustomDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CustomDataSourceDesigner.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CustomParameter.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">DataParameter.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityDataSourceFilter.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityRelationship.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityRelationshipMember.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityTransactionModule.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ILinkedDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ManyToManyListRelationship.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ManyToManyViewRelationship.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">OneToManyGridRelationship.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">OneToOneViewRelationship.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ProviderDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ProviderDataSourceDesigner.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ReadOnlyDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ReadOnlyDataSourceDesigner.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlParameter.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IntroducerDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">AuthorDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">PublisherDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EmployeeDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UsersDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CourseDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookTypeDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookImageDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UserTypeDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Book_AuthorDataSource.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">FormUtil.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">FormUtilBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">MultiBindableTemplate.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">MultiFormView.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityGridView.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityDropDownList.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BoundEntityDropDownField.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BoundRadioButtonField.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">GridViewSearchPanel.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">GridViewSearchPanelState.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityLabel.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">HyperlinkField.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IntroducerRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">AuthorRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">PublisherRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EmployeeRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UsersRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CourseRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookTypeRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookImageRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UserTypeRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Book_AuthorRepeater.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Web.config</span>
+                  </li>
+                  <li>
+                    <span class="file">Enterprise Library v5_0 website configuration files</span>
+                  </li>
+                  <li>
+                    <span class="file">Default.aspx</span>
+                  </li>
+                  <li>
+                    <span class="file">Default.aspx.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Library.sln</span>
+                  </li>
+                  <li>
+                    <span class="file">Library.BLL.csproj</span>
+                  </li>
+                  <li>
+                    <span class="file">Library.DAL.DAL.csproj</span>
+                  </li>
+                  <li>
+                    <span class="file">Library.BLL.DAL.SqlClient.csproj</span>
+                  </li>
+                  <li>
+                    <span class="file">Library.Windows.Forms.csproj</span>
+                  </li>
+                  <li>
+                    <span class="file">Library.Web.csproj</span>
+                  </li>
+                  <li>
+                    <span class="file">Library.build</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityHelper.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EntityUtil.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:14.8320870</span><p /></li>
+              <li>
+                <h3>Author</h3>
+                <ul>
+                  <li>
+                    <span class="file">Author.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IAuthor.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Author.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">AuthorProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">AuthorProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlAuthorProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\AuthorTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.6280355</span><p /></li>
+              <li>
+                <h3>Book</h3>
+                <ul>
+                  <li>
+                    <span class="file">Book.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IBook.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Book.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlBookProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\BookTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.2960167</span><p /></li>
+              <li>
+                <h3>Book_Author</h3>
+                <ul>
+                  <li>
+                    <span class="file">Book_Author.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IBook_Author.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Book_Author.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Book_AuthorProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Book_AuthorProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlBook_AuthorProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\Book_AuthorTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.1670107</span><p /></li>
+              <li>
+                <h3>BookImage</h3>
+                <ul>
+                  <li>
+                    <span class="file">BookImage.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IBookImage.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookImage.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookImageProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookImageProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlBookImageProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\BookImageTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.1740083</span><p /></li>
+              <li>
+                <h3>BookType</h3>
+                <ul>
+                  <li>
+                    <span class="file">BookType.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IBookType.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookType.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookTypeProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">BookTypeProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlBookTypeProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\BookTypeTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.1310078</span><p /></li>
+              <li>
+                <h3>Course</h3>
+                <ul>
+                  <li>
+                    <span class="file">Course.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">ICourse.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Course.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CourseProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">CourseProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlCourseProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\CourseTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.1800101</span><p /></li>
+              <li>
+                <h3>Employee</h3>
+                <ul>
+                  <li>
+                    <span class="file">Employee.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IEmployee.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Employee.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EmployeeProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">EmployeeProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlEmployeeProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\EmployeeTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.3450201</span><p /></li>
+              <li>
+                <h3>Introducer</h3>
+                <ul>
+                  <li>
+                    <span class="file">Introducer.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IIntroducer.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Introducer.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IntroducerProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IntroducerProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlIntroducerProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\IntroducerTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.3140168</span><p /></li>
+              <li>
+                <h3>Publisher</h3>
+                <ul>
+                  <li>
+                    <span class="file">Publisher.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IPublisher.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Publisher.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">PublisherProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">PublisherProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlPublisherProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\PublisherTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.1450075</span><p /></li>
+              <li>
+                <h3>Users</h3>
+                <ul>
+                  <li>
+                    <span class="file">Users.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IUsers.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">Users.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UsersProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UsersProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlUsersProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\UsersTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.3630210</span><p /></li>
+              <li>
+                <h3>UserType</h3>
+                <ul>
+                  <li>
+                    <span class="file">UserType.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">IUserType.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UserType.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UserTypeProviderBase.generatedCore.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">UserTypeProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\SqlUserTypeProviderBase.generated.cs</span>
+                  </li>
+                  <li>
+                    <span class="file">SqlClient\UserTypeTest.cs</span>
+                  </li>
+                </ul>
+			Execution time: <span class="executionTime">00:00:00.1840112</span><p /></li>
+              <li>
+                <h3>
+            Custom Stored Procedures
+         </h3>
+                <ul />
+              </li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <hr noshade="noshade" />
+    <table width="100%" border="0" cellspacing="2" cellpadding="2">
+      <tr>
+        <td />
+        <td />
+      </tr>
+    </table>
+    <div align="center">
+			.netTiers Open Source Group, 2008-2011
+		</div>
+    <div align="center">
+      <a href="http://code.google.com/p/nettiers/">
+        <img src="http://code.google.com/hosting/images/code_sm.png" border="0" alt="Google Code Logo" />
+      </a>
+    </div>
+  </body>
+</html>

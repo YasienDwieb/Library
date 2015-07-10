@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+  
+    <siteMapNode url="" title="Admin"  description="">
+        <siteMapNode url="~/Admin/Default.aspx" title="Admin"  description="Admin" />  
+	<siteMapNode url="~/Admin/Author.aspx" title="Author"  description="" />
+	<siteMapNode url="~/Admin/Book.aspx" title="Book"  description="" />
+	<siteMapNode url="~/Admin/Book_Author.aspx" title="Book Author"  description="" />
+	<siteMapNode url="~/Admin/BookImage.aspx" title="Book Image"  description="" />
+	<siteMapNode url="~/Admin/BookType.aspx" title="Book Type"  description="" />
+	<siteMapNode url="~/Admin/Course.aspx" title="Course"  description="" />
+	<siteMapNode url="~/Admin/Employee.aspx" title="Employee"  description="" />
+	<siteMapNode url="~/Admin/Introducer.aspx" title="Introducer"  description="" />
+	<siteMapNode url="~/Admin/Publisher.aspx" title="Publisher"  description="" />
+	<siteMapNode url="~/Admin/Users.aspx" title="Users"  description="" />
+	<siteMapNode url="~/Admin/UserType.aspx" title="User Type"  description="" />
+        </siteMapNode>              
+</siteMap>

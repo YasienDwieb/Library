@@ -1,0 +1,318 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>12.0.21005.1</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2B97BEAD-958A-410B-B4A4-74D307204F3D}</ProjectGuid>
+    <ProjectType>Local</ProjectType>
+	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OutputType>Library</OutputType>
+    <ApplicationIcon>
+	</ApplicationIcon>
+    <AssemblyKeyContainerName>
+	</AssemblyKeyContainerName>
+    <AssemblyName>Library.Windows.Forms</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\Library.snk</AssemblyOriginatorKeyFile>
+	<SignAssembly>false</SignAssembly>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <RootNamespace>Library.Windows.Forms</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject></StartupObject>
+    <FileUpgradeFlags></FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>Library.Windows.Forms.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>Library.Windows.Forms.xml</DocumentationFile>
+	 <DebugType>pdbonly</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'GenerateDebug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>Library.Windows.Forms.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System"/>
+	<Reference Include="System.Core">
+		<RequiredTargetFramework>4.5</RequiredTargetFramework>
+	</Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations"/>
+    <Reference Include="System.Web"/>
+    <Reference Include="System.Data"/>
+    <Reference Include="System.Design"/>
+    <Reference Include="System.Xml"/>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Drawing" />
+	<Reference Include="System.Windows.Forms" />
+     
+	<ProjectReference Include="..\Library.BLL\Library.BLL.csproj">
+      <Name>Library.BLL</Name>
+      <Project>{BB0CD1A7-355F-4D50-97AF-B01428E93288}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+	
+	
+	
+	
+    
+    	
+	
+	
+	
+	</ItemGroup>
+	
+		
+	<!-- Custom code folder: C:\Users\Yasien Dwieb\Desktop\Library2\Library.Windows.Forms\App_Code -->
+	<ItemGroup>	
+		<Folder Include="App_Code\" />
+        <Compile Include="App_Code\**\*.cs">
+          <SubType>Code</SubType>
+        </Compile>		
+	</ItemGroup>
+
+	<!-- Include any user files -->
+	<ItemGroup>	
+		<Compile Include="**\*.user.*" Exclude="**\*.csproj.user;**\.svn\**" >
+          <SubType>Code</SubType>
+        </Compile>		
+	</ItemGroup>
+	
+	<ItemGroup>
+		<Compile Include="UI\AuthorDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\AuthorDataGridViewBase.cs">
+		   <DependentUpon>AuthorDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\AuthorEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\AuthorEditControlBase.cs">
+		   <DependentUpon>AuthorEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\BookDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\BookDataGridViewBase.cs">
+		   <DependentUpon>BookDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\BookEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\BookEditControlBase.cs">
+		   <DependentUpon>BookEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\Book_AuthorDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\Book_AuthorDataGridViewBase.cs">
+		   <DependentUpon>Book_AuthorDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\Book_AuthorEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\Book_AuthorEditControlBase.cs">
+		   <DependentUpon>Book_AuthorEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\BookImageDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\BookImageDataGridViewBase.cs">
+		   <DependentUpon>BookImageDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\BookImageEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\BookImageEditControlBase.cs">
+		   <DependentUpon>BookImageEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\BookTypeDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\BookTypeDataGridViewBase.cs">
+		   <DependentUpon>BookTypeDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\BookTypeEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\BookTypeEditControlBase.cs">
+		   <DependentUpon>BookTypeEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\CourseDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\CourseDataGridViewBase.cs">
+		   <DependentUpon>CourseDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\CourseEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\CourseEditControlBase.cs">
+		   <DependentUpon>CourseEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\EmployeeDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\EmployeeDataGridViewBase.cs">
+		   <DependentUpon>EmployeeDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\EmployeeEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\EmployeeEditControlBase.cs">
+		   <DependentUpon>EmployeeEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\IntroducerDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\IntroducerDataGridViewBase.cs">
+		   <DependentUpon>IntroducerDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\IntroducerEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\IntroducerEditControlBase.cs">
+		   <DependentUpon>IntroducerEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\PublisherDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\PublisherDataGridViewBase.cs">
+		   <DependentUpon>PublisherDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\PublisherEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\PublisherEditControlBase.cs">
+		   <DependentUpon>PublisherEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\UsersDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\UsersDataGridViewBase.cs">
+		   <DependentUpon>UsersDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\UsersEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\UsersEditControlBase.cs">
+		   <DependentUpon>UsersEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="UI\UserTypeDataGridView.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\UserTypeDataGridViewBase.cs">
+		   <DependentUpon>UserTypeDataGridView.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>		
+		<Compile Include="UI\UserTypeEditControl.cs">
+		  <SubType>designer</SubType>
+		</Compile>
+		<Compile Include="UI\UserTypeEditControlBase.cs">
+		   <DependentUpon>UserTypeEditControl.cs</DependentUpon>
+		  <SubType>Code</SubType>
+		</Compile>
+		<Compile Include="..\AssemblyInfo.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+			
+
+		
+		
+
+		
+		
+			<!--<Compile Include="Data\BindingSources.cs">
+			  <SubType>Code</SubType>
+			</Compile>-->
+		
+		
+		 <AppDesigner Include="Properties\" />
+	</ItemGroup>
+	
+	
+	
+	
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+	<PostBuildEvent>
+	</PostBuildEvent>
+  </PropertyGroup>
+
+</Project>

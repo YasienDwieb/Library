@@ -1,0 +1,5125 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet type='text/xsl' href="scriptsql.xsl"?>
+<root xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<database includeDrop="true">Lib</database>
+<procedures>
+		
+		<procedure owner="dbo" name="Introducer_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Introducer table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[Name],
+					[Country],
+					[City],
+					[BirthDate],
+					[Position],
+					[IsAlive],
+					[Mobile],
+					[Email],
+					[Website],
+					[Book_ID],
+					[Gender]
+				FROM
+					[dbo].[Introducer]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Introducer_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Introducer table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Introducer]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Country], O.[City], O.[BirthDate], O.[Position], O.[IsAlive], O.[Mobile], O.[Email], O.[Website], O.[Book_ID], O.[Gender]
+				FROM
+				    [dbo].[Introducer] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Introducer]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Introducer_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Introducer table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@BirthDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Position" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@IsAlive" type="nchar" direction="Input" size="10" precision="0" scale="0" param="(10)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Gender" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Introducer]
+					(
+					[Name]
+					,[Country]
+					,[City]
+					,[BirthDate]
+					,[Position]
+					,[IsAlive]
+					,[Mobile]
+					,[Email]
+					,[Website]
+					,[Book_ID]
+					,[Gender]
+					)
+				VALUES
+					(
+					@Name
+					,@Country
+					,@City
+					,@BirthDate
+					,@Position
+					,@IsAlive
+					,@Mobile
+					,@Email
+					,@Website
+					,@Book_ID
+					,@Gender
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Introducer_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Introducer table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@BirthDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Position" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@IsAlive" type="nchar" direction="Input" size="10" precision="0" scale="0" param="(10)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Gender" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Introducer]
+				SET
+					[Name] = @Name
+					,[Country] = @Country
+					,[City] = @City
+					,[BirthDate] = @BirthDate
+					,[Position] = @Position
+					,[IsAlive] = @IsAlive
+					,[Mobile] = @Mobile
+					,[Email] = @Email
+					,[Website] = @Website
+					,[Book_ID] = @Book_ID
+					,[Gender] = @Gender
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Introducer_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Introducer table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Introducer] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Introducer_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Introducer table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[Name],
+					[Country],
+					[City],
+					[BirthDate],
+					[Position],
+					[IsAlive],
+					[Mobile],
+					[Email],
+					[Website],
+					[Book_ID],
+					[Gender]
+				FROM
+					[dbo].[Introducer]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Introducer_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Introducer table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@BirthDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Position" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@IsAlive" type="nchar" direction="Input" size="10" precision="0" scale="0" param="(10)" nulldefault="null"/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Gender" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Country]
+	, [City]
+	, [BirthDate]
+	, [Position]
+	, [IsAlive]
+	, [Mobile]
+	, [Email]
+	, [Website]
+	, [Book_ID]
+	, [Gender]
+    FROM
+	[dbo].[Introducer]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([Name] = @Name OR @Name IS NULL)
+	AND ([Country] = @Country OR @Country IS NULL)
+	AND ([City] = @City OR @City IS NULL)
+	AND ([BirthDate] = @BirthDate OR @BirthDate IS NULL)
+	AND ([Position] = @Position OR @Position IS NULL)
+	AND ([IsAlive] = @IsAlive OR @IsAlive IS NULL)
+	AND ([Mobile] = @Mobile OR @Mobile IS NULL)
+	AND ([Email] = @Email OR @Email IS NULL)
+	AND ([Website] = @Website OR @Website IS NULL)
+	AND ([Book_ID] = @Book_ID OR @Book_ID IS NULL)
+	AND ([Gender] = @Gender OR @Gender IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Country]
+	, [City]
+	, [BirthDate]
+	, [Position]
+	, [IsAlive]
+	, [Mobile]
+	, [Email]
+	, [Website]
+	, [Book_ID]
+	, [Gender]
+    FROM
+	[dbo].[Introducer]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([Name] = @Name AND @Name is not null)
+	OR ([Country] = @Country AND @Country is not null)
+	OR ([City] = @City AND @City is not null)
+	OR ([BirthDate] = @BirthDate AND @BirthDate is not null)
+	OR ([Position] = @Position AND @Position is not null)
+	OR ([IsAlive] = @IsAlive AND @IsAlive is not null)
+	OR ([Mobile] = @Mobile AND @Mobile is not null)
+	OR ([Email] = @Email AND @Email is not null)
+	OR ([Website] = @Website AND @Website is not null)
+	OR ([Book_ID] = @Book_ID AND @Book_ID is not null)
+	OR ([Gender] = @Gender AND @Gender is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Introducer_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Introducer table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[Introducer] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Country], O.[City], O.[BirthDate], O.[Position], O.[IsAlive], O.[Mobile], O.[Email], O.[Website], O.[Book_ID], O.[Gender]
+				FROM
+				    [dbo].[Introducer] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Introducer] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Author_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[Name],
+					[Country],
+					[City],
+					[BirthDate],
+					[Position],
+					[IsAlive],
+					[Mobile],
+					[Email],
+					[Website],
+					[Gender]
+				FROM
+					[dbo].[Author]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Author_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Author table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Author]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Country], O.[City], O.[BirthDate], O.[Position], O.[IsAlive], O.[Mobile], O.[Email], O.[Website], O.[Gender]
+				FROM
+				    [dbo].[Author] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Author]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Author_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@BirthDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Position" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@IsAlive" type="nchar" direction="Input" size="10" precision="0" scale="0" param="(10)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Gender" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Author]
+					(
+					[Name]
+					,[Country]
+					,[City]
+					,[BirthDate]
+					,[Position]
+					,[IsAlive]
+					,[Mobile]
+					,[Email]
+					,[Website]
+					,[Gender]
+					)
+				VALUES
+					(
+					@Name
+					,@Country
+					,@City
+					,@BirthDate
+					,@Position
+					,@IsAlive
+					,@Mobile
+					,@Email
+					,@Website
+					,@Gender
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Author_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@BirthDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Position" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@IsAlive" type="nchar" direction="Input" size="10" precision="0" scale="0" param="(10)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Gender" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Author]
+				SET
+					[Name] = @Name
+					,[Country] = @Country
+					,[City] = @City
+					,[BirthDate] = @BirthDate
+					,[Position] = @Position
+					,[IsAlive] = @IsAlive
+					,[Mobile] = @Mobile
+					,[Email] = @Email
+					,[Website] = @Website
+					,[Gender] = @Gender
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Author_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Author] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Author_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Author table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[Name],
+					[Country],
+					[City],
+					[BirthDate],
+					[Position],
+					[IsAlive],
+					[Mobile],
+					[Email],
+					[Website],
+					[Gender]
+				FROM
+					[dbo].[Author]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Author_GetByBook_IDFromBook_Author" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records through a junction table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+SELECT dbo.[Author].[ID]
+       ,dbo.[Author].[Name]
+       ,dbo.[Author].[Country]
+       ,dbo.[Author].[City]
+       ,dbo.[Author].[BirthDate]
+       ,dbo.[Author].[Position]
+       ,dbo.[Author].[IsAlive]
+       ,dbo.[Author].[Mobile]
+       ,dbo.[Author].[Email]
+       ,dbo.[Author].[Website]
+       ,dbo.[Author].[Gender]
+  FROM dbo.[Author]
+ WHERE EXISTS (SELECT 1
+                 FROM dbo.[Book_Author] 
+                WHERE dbo.[Book_Author].[Book_ID] = @Book_ID
+                  AND dbo.[Book_Author].[Author_ID] = dbo.[Author].[ID]
+                  )
+				SELECT @@ROWCOUNT			
+				]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Author_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Author table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@BirthDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Position" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@IsAlive" type="nchar" direction="Input" size="10" precision="0" scale="0" param="(10)" nulldefault="null"/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Gender" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Country]
+	, [City]
+	, [BirthDate]
+	, [Position]
+	, [IsAlive]
+	, [Mobile]
+	, [Email]
+	, [Website]
+	, [Gender]
+    FROM
+	[dbo].[Author]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([Name] = @Name OR @Name IS NULL)
+	AND ([Country] = @Country OR @Country IS NULL)
+	AND ([City] = @City OR @City IS NULL)
+	AND ([BirthDate] = @BirthDate OR @BirthDate IS NULL)
+	AND ([Position] = @Position OR @Position IS NULL)
+	AND ([IsAlive] = @IsAlive OR @IsAlive IS NULL)
+	AND ([Mobile] = @Mobile OR @Mobile IS NULL)
+	AND ([Email] = @Email OR @Email IS NULL)
+	AND ([Website] = @Website OR @Website IS NULL)
+	AND ([Gender] = @Gender OR @Gender IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Country]
+	, [City]
+	, [BirthDate]
+	, [Position]
+	, [IsAlive]
+	, [Mobile]
+	, [Email]
+	, [Website]
+	, [Gender]
+    FROM
+	[dbo].[Author]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([Name] = @Name AND @Name is not null)
+	OR ([Country] = @Country AND @Country is not null)
+	OR ([City] = @City AND @City is not null)
+	OR ([BirthDate] = @BirthDate AND @BirthDate is not null)
+	OR ([Position] = @Position AND @Position is not null)
+	OR ([IsAlive] = @IsAlive AND @IsAlive is not null)
+	OR ([Mobile] = @Mobile AND @Mobile is not null)
+	OR ([Email] = @Email AND @Email is not null)
+	OR ([Website] = @Website AND @Website is not null)
+	OR ([Gender] = @Gender AND @Gender is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Author_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Author table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[Author] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Country], O.[City], O.[BirthDate], O.[Position], O.[IsAlive], O.[Mobile], O.[Email], O.[Website], O.[Gender]
+				FROM
+				    [dbo].[Author] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Author] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Publisher_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Publisher table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[Name],
+					[Mobile],
+					[Email],
+					[Website],
+					[FounedOn],
+					[Country],
+					[City],
+					[Address]
+				FROM
+					[dbo].[Publisher]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Publisher_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Publisher table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Publisher]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Mobile], O.[Email], O.[Website], O.[FounedOn], O.[Country], O.[City], O.[Address]
+				FROM
+				    [dbo].[Publisher] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Publisher]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Publisher_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Publisher table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Mobile" type="nchar" direction="Input" size="14" precision="0" scale="0" param="(14)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@FounedOn" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Publisher]
+					(
+					[Name]
+					,[Mobile]
+					,[Email]
+					,[Website]
+					,[FounedOn]
+					,[Country]
+					,[City]
+					,[Address]
+					)
+				VALUES
+					(
+					@Name
+					,@Mobile
+					,@Email
+					,@Website
+					,@FounedOn
+					,@Country
+					,@City
+					,@Address
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Publisher_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Publisher table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Mobile" type="nchar" direction="Input" size="14" precision="0" scale="0" param="(14)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@FounedOn" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Publisher]
+				SET
+					[Name] = @Name
+					,[Mobile] = @Mobile
+					,[Email] = @Email
+					,[Website] = @Website
+					,[FounedOn] = @FounedOn
+					,[Country] = @Country
+					,[City] = @City
+					,[Address] = @Address
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Publisher_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Publisher table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Publisher] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Publisher_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Publisher table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[Name],
+					[Mobile],
+					[Email],
+					[Website],
+					[FounedOn],
+					[Country],
+					[City],
+					[Address]
+				FROM
+					[dbo].[Publisher]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Publisher_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Publisher table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Mobile" type="nchar" direction="Input" size="14" precision="0" scale="0" param="(14)" nulldefault="null"/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Website" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@FounedOn" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Mobile]
+	, [Email]
+	, [Website]
+	, [FounedOn]
+	, [Country]
+	, [City]
+	, [Address]
+    FROM
+	[dbo].[Publisher]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([Name] = @Name OR @Name IS NULL)
+	AND ([Mobile] = @Mobile OR @Mobile IS NULL)
+	AND ([Email] = @Email OR @Email IS NULL)
+	AND ([Website] = @Website OR @Website IS NULL)
+	AND ([FounedOn] = @FounedOn OR @FounedOn IS NULL)
+	AND ([Country] = @Country OR @Country IS NULL)
+	AND ([City] = @City OR @City IS NULL)
+	AND ([Address] = @Address OR @Address IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Mobile]
+	, [Email]
+	, [Website]
+	, [FounedOn]
+	, [Country]
+	, [City]
+	, [Address]
+    FROM
+	[dbo].[Publisher]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([Name] = @Name AND @Name is not null)
+	OR ([Mobile] = @Mobile AND @Mobile is not null)
+	OR ([Email] = @Email AND @Email is not null)
+	OR ([Website] = @Website AND @Website is not null)
+	OR ([FounedOn] = @FounedOn AND @FounedOn is not null)
+	OR ([Country] = @Country AND @Country is not null)
+	OR ([City] = @City AND @City is not null)
+	OR ([Address] = @Address AND @Address is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Publisher_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Publisher table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[Publisher] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Mobile], O.[Email], O.[Website], O.[FounedOn], O.[Country], O.[City], O.[Address]
+				FROM
+				    [dbo].[Publisher] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Publisher] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Employee_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Employee table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[UserName],
+					[Password],
+					[Last_Login],
+					[Last_Logout],
+					[Is_Online],
+					[Is_Active],
+					[Is_Admin],
+					[First_Name],
+					[Last_Name],
+					[Email],
+					[Country],
+					[City],
+					[Address],
+					[Mobile],
+					[Phone],
+					[Postion],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Employee]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Employee_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Employee table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Employee]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[UserName], O.[Password], O.[Last_Login], O.[Last_Logout], O.[Is_Online], O.[Is_Active], O.[Is_Admin], O.[First_Name], O.[Last_Name], O.[Email], O.[Country], O.[City], O.[Address], O.[Mobile], O.[Phone], O.[Postion], O.[Is_Deleted], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Employee] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Employee]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Employee_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Employee table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Password" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Login" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Last_Logout" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Is_Online" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Active" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Admin" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@First_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Phone" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Postion" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Employee]
+					(
+					[UserName]
+					,[Password]
+					,[Last_Login]
+					,[Last_Logout]
+					,[Is_Online]
+					,[Is_Active]
+					,[Is_Admin]
+					,[First_Name]
+					,[Last_Name]
+					,[Email]
+					,[Country]
+					,[City]
+					,[Address]
+					,[Mobile]
+					,[Phone]
+					,[Postion]
+					,[Is_Deleted]
+					,[CreatedOn]
+					,[CreatedBy]
+					,[UpdatedOn]
+					,[UpdatedBy]
+					,[DeletedOn]
+					,[DeletedBy]
+					)
+				VALUES
+					(
+					@UserName
+					,@Password
+					,@Last_Login
+					,@Last_Logout
+					,@Is_Online
+					,@Is_Active
+					,@Is_Admin
+					,@First_Name
+					,@Last_Name
+					,@Email
+					,@Country
+					,@City
+					,@Address
+					,@Mobile
+					,@Phone
+					,@Postion
+					,@Is_Deleted
+					,@CreatedOn
+					,@CreatedBy
+					,@UpdatedOn
+					,@UpdatedBy
+					,@DeletedOn
+					,@DeletedBy
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Employee_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Employee table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Password" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Login" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Last_Logout" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Is_Online" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Active" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Admin" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@First_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Phone" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Postion" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Employee]
+				SET
+					[UserName] = @UserName
+					,[Password] = @Password
+					,[Last_Login] = @Last_Login
+					,[Last_Logout] = @Last_Logout
+					,[Is_Online] = @Is_Online
+					,[Is_Active] = @Is_Active
+					,[Is_Admin] = @Is_Admin
+					,[First_Name] = @First_Name
+					,[Last_Name] = @Last_Name
+					,[Email] = @Email
+					,[Country] = @Country
+					,[City] = @City
+					,[Address] = @Address
+					,[Mobile] = @Mobile
+					,[Phone] = @Phone
+					,[Postion] = @Postion
+					,[Is_Deleted] = @Is_Deleted
+					,[CreatedOn] = @CreatedOn
+					,[CreatedBy] = @CreatedBy
+					,[UpdatedOn] = @UpdatedOn
+					,[UpdatedBy] = @UpdatedBy
+					,[DeletedOn] = @DeletedOn
+					,[DeletedBy] = @DeletedBy
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Employee_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Employee table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Employee] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Employee_GetByUserName" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Employee table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[UserName],
+					[Password],
+					[Last_Login],
+					[Last_Logout],
+					[Is_Online],
+					[Is_Active],
+					[Is_Admin],
+					[First_Name],
+					[Last_Name],
+					[Email],
+					[Country],
+					[City],
+					[Address],
+					[Mobile],
+					[Phone],
+					[Postion],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Employee]
+				WHERE
+					[UserName] = @UserName
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Employee_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Employee table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[UserName],
+					[Password],
+					[Last_Login],
+					[Last_Logout],
+					[Is_Online],
+					[Is_Active],
+					[Is_Admin],
+					[First_Name],
+					[Last_Name],
+					[Email],
+					[Country],
+					[City],
+					[Address],
+					[Mobile],
+					[Phone],
+					[Postion],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Employee]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Employee_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Employee table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Password" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Last_Login" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@Last_Logout" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@Is_Online" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Is_Active" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Is_Admin" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@First_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Last_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Phone" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Postion" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [UserName]
+	, [Password]
+	, [Last_Login]
+	, [Last_Logout]
+	, [Is_Online]
+	, [Is_Active]
+	, [Is_Admin]
+	, [First_Name]
+	, [Last_Name]
+	, [Email]
+	, [Country]
+	, [City]
+	, [Address]
+	, [Mobile]
+	, [Phone]
+	, [Postion]
+	, [Is_Deleted]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Employee]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([UserName] = @UserName OR @UserName IS NULL)
+	AND ([Password] = @Password OR @Password IS NULL)
+	AND ([Last_Login] = @Last_Login OR @Last_Login IS NULL)
+	AND ([Last_Logout] = @Last_Logout OR @Last_Logout IS NULL)
+	AND ([Is_Online] = @Is_Online OR @Is_Online IS NULL)
+	AND ([Is_Active] = @Is_Active OR @Is_Active IS NULL)
+	AND ([Is_Admin] = @Is_Admin OR @Is_Admin IS NULL)
+	AND ([First_Name] = @First_Name OR @First_Name IS NULL)
+	AND ([Last_Name] = @Last_Name OR @Last_Name IS NULL)
+	AND ([Email] = @Email OR @Email IS NULL)
+	AND ([Country] = @Country OR @Country IS NULL)
+	AND ([City] = @City OR @City IS NULL)
+	AND ([Address] = @Address OR @Address IS NULL)
+	AND ([Mobile] = @Mobile OR @Mobile IS NULL)
+	AND ([Phone] = @Phone OR @Phone IS NULL)
+	AND ([Postion] = @Postion OR @Postion IS NULL)
+	AND ([Is_Deleted] = @Is_Deleted OR @Is_Deleted IS NULL)
+	AND ([CreatedOn] = @CreatedOn OR @CreatedOn IS NULL)
+	AND ([CreatedBy] = @CreatedBy OR @CreatedBy IS NULL)
+	AND ([UpdatedOn] = @UpdatedOn OR @UpdatedOn IS NULL)
+	AND ([UpdatedBy] = @UpdatedBy OR @UpdatedBy IS NULL)
+	AND ([DeletedOn] = @DeletedOn OR @DeletedOn IS NULL)
+	AND ([DeletedBy] = @DeletedBy OR @DeletedBy IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [UserName]
+	, [Password]
+	, [Last_Login]
+	, [Last_Logout]
+	, [Is_Online]
+	, [Is_Active]
+	, [Is_Admin]
+	, [First_Name]
+	, [Last_Name]
+	, [Email]
+	, [Country]
+	, [City]
+	, [Address]
+	, [Mobile]
+	, [Phone]
+	, [Postion]
+	, [Is_Deleted]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Employee]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([UserName] = @UserName AND @UserName is not null)
+	OR ([Password] = @Password AND @Password is not null)
+	OR ([Last_Login] = @Last_Login AND @Last_Login is not null)
+	OR ([Last_Logout] = @Last_Logout AND @Last_Logout is not null)
+	OR ([Is_Online] = @Is_Online AND @Is_Online is not null)
+	OR ([Is_Active] = @Is_Active AND @Is_Active is not null)
+	OR ([Is_Admin] = @Is_Admin AND @Is_Admin is not null)
+	OR ([First_Name] = @First_Name AND @First_Name is not null)
+	OR ([Last_Name] = @Last_Name AND @Last_Name is not null)
+	OR ([Email] = @Email AND @Email is not null)
+	OR ([Country] = @Country AND @Country is not null)
+	OR ([City] = @City AND @City is not null)
+	OR ([Address] = @Address AND @Address is not null)
+	OR ([Mobile] = @Mobile AND @Mobile is not null)
+	OR ([Phone] = @Phone AND @Phone is not null)
+	OR ([Postion] = @Postion AND @Postion is not null)
+	OR ([Is_Deleted] = @Is_Deleted AND @Is_Deleted is not null)
+	OR ([CreatedOn] = @CreatedOn AND @CreatedOn is not null)
+	OR ([CreatedBy] = @CreatedBy AND @CreatedBy is not null)
+	OR ([UpdatedOn] = @UpdatedOn AND @UpdatedOn is not null)
+	OR ([UpdatedBy] = @UpdatedBy AND @UpdatedBy is not null)
+	OR ([DeletedOn] = @DeletedOn AND @DeletedOn is not null)
+	OR ([DeletedBy] = @DeletedBy AND @DeletedBy is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Employee_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Employee table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[Employee] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[UserName], O.[Password], O.[Last_Login], O.[Last_Logout], O.[Is_Online], O.[Is_Active], O.[Is_Admin], O.[First_Name], O.[Last_Name], O.[Email], O.[Country], O.[City], O.[Address], O.[Mobile], O.[Phone], O.[Postion], O.[Is_Deleted], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Employee] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Employee] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Users_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Users table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[UserName],
+					[Password],
+					[Last_Login],
+					[Last_Logout],
+					[Is_Online],
+					[Is_Active],
+					[Is_Admin],
+					[UserType_ID],
+					[First_Name],
+					[Last_Name],
+					[Email],
+					[Country],
+					[City],
+					[Address],
+					[Mobile],
+					[Phone],
+					[Postion],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Users]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Users_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Users table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Users]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[UserName], O.[Password], O.[Last_Login], O.[Last_Logout], O.[Is_Online], O.[Is_Active], O.[Is_Admin], O.[UserType_ID], O.[First_Name], O.[Last_Name], O.[Email], O.[Country], O.[City], O.[Address], O.[Mobile], O.[Phone], O.[Postion], O.[Is_Deleted], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Users] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Users]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Users_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Users table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Password" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Login" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Last_Logout" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Is_Online" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Active" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Admin" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@UserType_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@First_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Phone" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Postion" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Users]
+					(
+					[UserName]
+					,[Password]
+					,[Last_Login]
+					,[Last_Logout]
+					,[Is_Online]
+					,[Is_Active]
+					,[Is_Admin]
+					,[UserType_ID]
+					,[First_Name]
+					,[Last_Name]
+					,[Email]
+					,[Country]
+					,[City]
+					,[Address]
+					,[Mobile]
+					,[Phone]
+					,[Postion]
+					,[Is_Deleted]
+					,[CreatedOn]
+					,[CreatedBy]
+					,[UpdatedOn]
+					,[UpdatedBy]
+					,[DeletedOn]
+					,[DeletedBy]
+					)
+				VALUES
+					(
+					@UserName
+					,@Password
+					,@Last_Login
+					,@Last_Logout
+					,@Is_Online
+					,@Is_Active
+					,@Is_Admin
+					,@UserType_ID
+					,@First_Name
+					,@Last_Name
+					,@Email
+					,@Country
+					,@City
+					,@Address
+					,@Mobile
+					,@Phone
+					,@Postion
+					,@Is_Deleted
+					,@CreatedOn
+					,@CreatedBy
+					,@UpdatedOn
+					,@UpdatedBy
+					,@DeletedOn
+					,@DeletedBy
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Users_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Users table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Password" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Login" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Last_Logout" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@Is_Online" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Active" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Admin" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@UserType_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@First_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Last_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Phone" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Postion" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Users]
+				SET
+					[UserName] = @UserName
+					,[Password] = @Password
+					,[Last_Login] = @Last_Login
+					,[Last_Logout] = @Last_Logout
+					,[Is_Online] = @Is_Online
+					,[Is_Active] = @Is_Active
+					,[Is_Admin] = @Is_Admin
+					,[UserType_ID] = @UserType_ID
+					,[First_Name] = @First_Name
+					,[Last_Name] = @Last_Name
+					,[Email] = @Email
+					,[Country] = @Country
+					,[City] = @City
+					,[Address] = @Address
+					,[Mobile] = @Mobile
+					,[Phone] = @Phone
+					,[Postion] = @Postion
+					,[Is_Deleted] = @Is_Deleted
+					,[CreatedOn] = @CreatedOn
+					,[CreatedBy] = @CreatedBy
+					,[UpdatedOn] = @UpdatedOn
+					,[UpdatedBy] = @UpdatedBy
+					,[DeletedOn] = @DeletedOn
+					,[DeletedBy] = @DeletedBy
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Users_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Users table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Users] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Users_GetByUserType_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Users table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@UserType_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[UserName],
+					[Password],
+					[Last_Login],
+					[Last_Logout],
+					[Is_Online],
+					[Is_Active],
+					[Is_Admin],
+					[UserType_ID],
+					[First_Name],
+					[Last_Name],
+					[Email],
+					[Country],
+					[City],
+					[Address],
+					[Mobile],
+					[Phone],
+					[Postion],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Users]
+				WHERE
+					[UserType_ID] = @UserType_ID
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Users_GetByUserName" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Users table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[UserName],
+					[Password],
+					[Last_Login],
+					[Last_Logout],
+					[Is_Online],
+					[Is_Active],
+					[Is_Admin],
+					[UserType_ID],
+					[First_Name],
+					[Last_Name],
+					[Email],
+					[Country],
+					[City],
+					[Address],
+					[Mobile],
+					[Phone],
+					[Postion],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Users]
+				WHERE
+					[UserName] = @UserName
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Users_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Users table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[UserName],
+					[Password],
+					[Last_Login],
+					[Last_Logout],
+					[Is_Online],
+					[Is_Active],
+					[Is_Admin],
+					[UserType_ID],
+					[First_Name],
+					[Last_Name],
+					[Email],
+					[Country],
+					[City],
+					[Address],
+					[Mobile],
+					[Phone],
+					[Postion],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Users]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Users_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Users table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@UserName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Password" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Last_Login" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@Last_Logout" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@Is_Online" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Is_Active" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Is_Admin" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@UserType_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@First_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Last_Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Email" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Country" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@City" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Address" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Mobile" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Phone" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Postion" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [UserName]
+	, [Password]
+	, [Last_Login]
+	, [Last_Logout]
+	, [Is_Online]
+	, [Is_Active]
+	, [Is_Admin]
+	, [UserType_ID]
+	, [First_Name]
+	, [Last_Name]
+	, [Email]
+	, [Country]
+	, [City]
+	, [Address]
+	, [Mobile]
+	, [Phone]
+	, [Postion]
+	, [Is_Deleted]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Users]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([UserName] = @UserName OR @UserName IS NULL)
+	AND ([Password] = @Password OR @Password IS NULL)
+	AND ([Last_Login] = @Last_Login OR @Last_Login IS NULL)
+	AND ([Last_Logout] = @Last_Logout OR @Last_Logout IS NULL)
+	AND ([Is_Online] = @Is_Online OR @Is_Online IS NULL)
+	AND ([Is_Active] = @Is_Active OR @Is_Active IS NULL)
+	AND ([Is_Admin] = @Is_Admin OR @Is_Admin IS NULL)
+	AND ([UserType_ID] = @UserType_ID OR @UserType_ID IS NULL)
+	AND ([First_Name] = @First_Name OR @First_Name IS NULL)
+	AND ([Last_Name] = @Last_Name OR @Last_Name IS NULL)
+	AND ([Email] = @Email OR @Email IS NULL)
+	AND ([Country] = @Country OR @Country IS NULL)
+	AND ([City] = @City OR @City IS NULL)
+	AND ([Address] = @Address OR @Address IS NULL)
+	AND ([Mobile] = @Mobile OR @Mobile IS NULL)
+	AND ([Phone] = @Phone OR @Phone IS NULL)
+	AND ([Postion] = @Postion OR @Postion IS NULL)
+	AND ([Is_Deleted] = @Is_Deleted OR @Is_Deleted IS NULL)
+	AND ([CreatedOn] = @CreatedOn OR @CreatedOn IS NULL)
+	AND ([CreatedBy] = @CreatedBy OR @CreatedBy IS NULL)
+	AND ([UpdatedOn] = @UpdatedOn OR @UpdatedOn IS NULL)
+	AND ([UpdatedBy] = @UpdatedBy OR @UpdatedBy IS NULL)
+	AND ([DeletedOn] = @DeletedOn OR @DeletedOn IS NULL)
+	AND ([DeletedBy] = @DeletedBy OR @DeletedBy IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [UserName]
+	, [Password]
+	, [Last_Login]
+	, [Last_Logout]
+	, [Is_Online]
+	, [Is_Active]
+	, [Is_Admin]
+	, [UserType_ID]
+	, [First_Name]
+	, [Last_Name]
+	, [Email]
+	, [Country]
+	, [City]
+	, [Address]
+	, [Mobile]
+	, [Phone]
+	, [Postion]
+	, [Is_Deleted]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Users]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([UserName] = @UserName AND @UserName is not null)
+	OR ([Password] = @Password AND @Password is not null)
+	OR ([Last_Login] = @Last_Login AND @Last_Login is not null)
+	OR ([Last_Logout] = @Last_Logout AND @Last_Logout is not null)
+	OR ([Is_Online] = @Is_Online AND @Is_Online is not null)
+	OR ([Is_Active] = @Is_Active AND @Is_Active is not null)
+	OR ([Is_Admin] = @Is_Admin AND @Is_Admin is not null)
+	OR ([UserType_ID] = @UserType_ID AND @UserType_ID is not null)
+	OR ([First_Name] = @First_Name AND @First_Name is not null)
+	OR ([Last_Name] = @Last_Name AND @Last_Name is not null)
+	OR ([Email] = @Email AND @Email is not null)
+	OR ([Country] = @Country AND @Country is not null)
+	OR ([City] = @City AND @City is not null)
+	OR ([Address] = @Address AND @Address is not null)
+	OR ([Mobile] = @Mobile AND @Mobile is not null)
+	OR ([Phone] = @Phone AND @Phone is not null)
+	OR ([Postion] = @Postion AND @Postion is not null)
+	OR ([Is_Deleted] = @Is_Deleted AND @Is_Deleted is not null)
+	OR ([CreatedOn] = @CreatedOn AND @CreatedOn is not null)
+	OR ([CreatedBy] = @CreatedBy AND @CreatedBy is not null)
+	OR ([UpdatedOn] = @UpdatedOn AND @UpdatedOn is not null)
+	OR ([UpdatedBy] = @UpdatedBy AND @UpdatedBy is not null)
+	OR ([DeletedOn] = @DeletedOn AND @DeletedOn is not null)
+	OR ([DeletedBy] = @DeletedBy AND @DeletedBy is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Users_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Users table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[Users] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[UserName], O.[Password], O.[Last_Login], O.[Last_Logout], O.[Is_Online], O.[Is_Active], O.[Is_Admin], O.[UserType_ID], O.[First_Name], O.[Last_Name], O.[Email], O.[Country], O.[City], O.[Address], O.[Mobile], O.[Phone], O.[Postion], O.[Is_Deleted], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Users] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Users] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Course_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Course table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[Course_Name],
+					[Course_Scope],
+					[Duration],
+					[DurationType_ID],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Course]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Course_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Course table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Course]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Course_Name], O.[Course_Scope], O.[Duration], O.[DurationType_ID], O.[Is_Deleted], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Course] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Course]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Course_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Course table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Course_Name" type="nvarchar" direction="Input" size="200" precision="0" scale="0" param="(200)" nulldefault=""/>
+				<parameter name="@Course_Scope" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Duration" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DurationType_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Course]
+					(
+					[Course_Name]
+					,[Course_Scope]
+					,[Duration]
+					,[DurationType_ID]
+					,[Is_Deleted]
+					,[CreatedOn]
+					,[CreatedBy]
+					,[UpdatedOn]
+					,[UpdatedBy]
+					,[DeletedOn]
+					,[DeletedBy]
+					)
+				VALUES
+					(
+					@Course_Name
+					,@Course_Scope
+					,@Duration
+					,@DurationType_ID
+					,@Is_Deleted
+					,@CreatedOn
+					,@CreatedBy
+					,@UpdatedOn
+					,@UpdatedBy
+					,@DeletedOn
+					,@DeletedBy
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Course_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Course table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Course_Name" type="nvarchar" direction="Input" size="200" precision="0" scale="0" param="(200)" nulldefault=""/>
+				<parameter name="@Course_Scope" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Duration" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DurationType_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Course]
+				SET
+					[Course_Name] = @Course_Name
+					,[Course_Scope] = @Course_Scope
+					,[Duration] = @Duration
+					,[DurationType_ID] = @DurationType_ID
+					,[Is_Deleted] = @Is_Deleted
+					,[CreatedOn] = @CreatedOn
+					,[CreatedBy] = @CreatedBy
+					,[UpdatedOn] = @UpdatedOn
+					,[UpdatedBy] = @UpdatedBy
+					,[DeletedOn] = @DeletedOn
+					,[DeletedBy] = @DeletedBy
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Course_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Course table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Course] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Course_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Course table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[Course_Name],
+					[Course_Scope],
+					[Duration],
+					[DurationType_ID],
+					[Is_Deleted],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Course]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Course_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Course table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Course_Name" type="nvarchar" direction="Input" size="200" precision="0" scale="0" param="(200)" nulldefault="null"/>
+				<parameter name="@Course_Scope" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Duration" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@DurationType_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Is_Deleted" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [Course_Name]
+	, [Course_Scope]
+	, [Duration]
+	, [DurationType_ID]
+	, [Is_Deleted]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Course]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([Course_Name] = @Course_Name OR @Course_Name IS NULL)
+	AND ([Course_Scope] = @Course_Scope OR @Course_Scope IS NULL)
+	AND ([Duration] = @Duration OR @Duration IS NULL)
+	AND ([DurationType_ID] = @DurationType_ID OR @DurationType_ID IS NULL)
+	AND ([Is_Deleted] = @Is_Deleted OR @Is_Deleted IS NULL)
+	AND ([CreatedOn] = @CreatedOn OR @CreatedOn IS NULL)
+	AND ([CreatedBy] = @CreatedBy OR @CreatedBy IS NULL)
+	AND ([UpdatedOn] = @UpdatedOn OR @UpdatedOn IS NULL)
+	AND ([UpdatedBy] = @UpdatedBy OR @UpdatedBy IS NULL)
+	AND ([DeletedOn] = @DeletedOn OR @DeletedOn IS NULL)
+	AND ([DeletedBy] = @DeletedBy OR @DeletedBy IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [Course_Name]
+	, [Course_Scope]
+	, [Duration]
+	, [DurationType_ID]
+	, [Is_Deleted]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Course]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([Course_Name] = @Course_Name AND @Course_Name is not null)
+	OR ([Course_Scope] = @Course_Scope AND @Course_Scope is not null)
+	OR ([Duration] = @Duration AND @Duration is not null)
+	OR ([DurationType_ID] = @DurationType_ID AND @DurationType_ID is not null)
+	OR ([Is_Deleted] = @Is_Deleted AND @Is_Deleted is not null)
+	OR ([CreatedOn] = @CreatedOn AND @CreatedOn is not null)
+	OR ([CreatedBy] = @CreatedBy AND @CreatedBy is not null)
+	OR ([UpdatedOn] = @UpdatedOn AND @UpdatedOn is not null)
+	OR ([UpdatedBy] = @UpdatedBy AND @UpdatedBy is not null)
+	OR ([DeletedOn] = @DeletedOn AND @DeletedOn is not null)
+	OR ([DeletedBy] = @DeletedBy AND @DeletedBy is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Course_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Course table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[Course] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Course_Name], O.[Course_Scope], O.[Duration], O.[DurationType_ID], O.[Is_Deleted], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Course] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Course] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="BookType_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the BookType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[TypeName]
+				FROM
+					[dbo].[BookType]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="BookType_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the BookType table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[BookType]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[TypeName]
+				FROM
+				    [dbo].[BookType] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[BookType]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="BookType_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the BookType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@TypeName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[BookType]
+					(
+					[TypeName]
+					)
+				VALUES
+					(
+					@TypeName
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="BookType_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the BookType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@TypeName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[BookType]
+				SET
+					[TypeName] = @TypeName
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="BookType_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the BookType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[BookType] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="BookType_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the BookType table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[TypeName]
+				FROM
+					[dbo].[BookType]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="BookType_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the BookType table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@TypeName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [TypeName]
+    FROM
+	[dbo].[BookType]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([TypeName] = @TypeName OR @TypeName IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [TypeName]
+    FROM
+	[dbo].[BookType]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([TypeName] = @TypeName AND @TypeName is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="BookType_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the BookType table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[BookType] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[TypeName]
+				FROM
+				    [dbo].[BookType] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[BookType] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="BookImage_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the BookImage table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[Name],
+					[Format],
+					[Size],
+					[Link],
+					[IsAvailable]
+				FROM
+					[dbo].[BookImage]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="BookImage_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the BookImage table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[BookImage]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Format], O.[Size], O.[Link], O.[IsAvailable]
+				FROM
+				    [dbo].[BookImage] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[BookImage]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="BookImage_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the BookImage table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Format" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Size" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Link" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@IsAvailable" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[BookImage]
+					(
+					[Name]
+					,[Format]
+					,[Size]
+					,[Link]
+					,[IsAvailable]
+					)
+				VALUES
+					(
+					@Name
+					,@Format
+					,@Size
+					,@Link
+					,@IsAvailable
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="BookImage_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the BookImage table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Format" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Size" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Link" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@IsAvailable" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[BookImage]
+				SET
+					[Name] = @Name
+					,[Format] = @Format
+					,[Size] = @Size
+					,[Link] = @Link
+					,[IsAvailable] = @IsAvailable
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="BookImage_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the BookImage table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[BookImage] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="BookImage_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the BookImage table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[Name],
+					[Format],
+					[Size],
+					[Link],
+					[IsAvailable]
+				FROM
+					[dbo].[BookImage]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="BookImage_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the BookImage table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Format" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Size" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Link" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@IsAvailable" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Format]
+	, [Size]
+	, [Link]
+	, [IsAvailable]
+    FROM
+	[dbo].[BookImage]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([Name] = @Name OR @Name IS NULL)
+	AND ([Format] = @Format OR @Format IS NULL)
+	AND ([Size] = @Size OR @Size IS NULL)
+	AND ([Link] = @Link OR @Link IS NULL)
+	AND ([IsAvailable] = @IsAvailable OR @IsAvailable IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Format]
+	, [Size]
+	, [Link]
+	, [IsAvailable]
+    FROM
+	[dbo].[BookImage]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([Name] = @Name AND @Name is not null)
+	OR ([Format] = @Format AND @Format is not null)
+	OR ([Size] = @Size AND @Size is not null)
+	OR ([Link] = @Link AND @Link is not null)
+	OR ([IsAvailable] = @IsAvailable AND @IsAvailable is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="BookImage_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the BookImage table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[BookImage] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Format], O.[Size], O.[Link], O.[IsAvailable]
+				FROM
+				    [dbo].[BookImage] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[BookImage] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="UserType_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the UserType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[TypeName]
+				FROM
+					[dbo].[UserType]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="UserType_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the UserType table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[UserType]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[TypeName]
+				FROM
+				    [dbo].[UserType] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[UserType]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="UserType_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the UserType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@TypeName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[UserType]
+					(
+					[TypeName]
+					)
+				VALUES
+					(
+					@TypeName
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="UserType_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the UserType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@TypeName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[UserType]
+				SET
+					[TypeName] = @TypeName
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="UserType_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the UserType table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[UserType] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="UserType_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the UserType table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[TypeName]
+				FROM
+					[dbo].[UserType]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="UserType_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the UserType table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@TypeName" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [TypeName]
+    FROM
+	[dbo].[UserType]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([TypeName] = @TypeName OR @TypeName IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [TypeName]
+    FROM
+	[dbo].[UserType]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([TypeName] = @TypeName AND @TypeName is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="UserType_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the UserType table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[UserType] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[TypeName]
+				FROM
+				    [dbo].[UserType] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[UserType] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Book_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Book table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[Name],
+					[Publisher],
+					[Publish_Date],
+					[IsAvailablePdf],
+					[IsAvailablePaper],
+					[IsBorrowed],
+					[User_ID],
+					[BorrowDate],
+					[Borrow_Times],
+					[IsLost],
+					[Type_ID],
+					[Publisher_ID],
+					[Papers_no],
+					[Introducer_ID],
+					[EmployeeI_D],
+					[Size],
+					[Price],
+					[Pdf_Link],
+					[Image_ID],
+					[ISBN],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Book]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Book_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Book table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Book]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Publisher], O.[Publish_Date], O.[IsAvailablePdf], O.[IsAvailablePaper], O.[IsBorrowed], O.[User_ID], O.[BorrowDate], O.[Borrow_Times], O.[IsLost], O.[Type_ID], O.[Publisher_ID], O.[Papers_no], O.[Introducer_ID], O.[EmployeeI_D], O.[Size], O.[Price], O.[Pdf_Link], O.[Image_ID], O.[ISBN], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Book] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Book]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Book_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Book table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="100" precision="0" scale="0" param="(100)" nulldefault=""/>
+				<parameter name="@Publisher" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Publish_Date" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsAvailablePdf" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsAvailablePaper" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsBorrowed" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@User_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@BorrowDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Borrow_Times" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsLost" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Type_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Publisher_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Papers_no" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Introducer_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@EmployeeI_D" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Size" type="float" direction="Input" size="8" precision="53" scale="0" param="" nulldefault=""/>
+				<parameter name="@Price" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Pdf_Link" type="nvarchar" direction="Input" size="250" precision="0" scale="0" param="(250)" nulldefault=""/>
+				<parameter name="@Image_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@ISBN" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Book]
+					(
+					[Name]
+					,[Publisher]
+					,[Publish_Date]
+					,[IsAvailablePdf]
+					,[IsAvailablePaper]
+					,[IsBorrowed]
+					,[User_ID]
+					,[BorrowDate]
+					,[Borrow_Times]
+					,[IsLost]
+					,[Type_ID]
+					,[Publisher_ID]
+					,[Papers_no]
+					,[Introducer_ID]
+					,[EmployeeI_D]
+					,[Size]
+					,[Price]
+					,[Pdf_Link]
+					,[Image_ID]
+					,[ISBN]
+					,[CreatedOn]
+					,[CreatedBy]
+					,[UpdatedOn]
+					,[UpdatedBy]
+					,[DeletedOn]
+					,[DeletedBy]
+					)
+				VALUES
+					(
+					@Name
+					,@Publisher
+					,@Publish_Date
+					,@IsAvailablePdf
+					,@IsAvailablePaper
+					,@IsBorrowed
+					,@User_ID
+					,@BorrowDate
+					,@Borrow_Times
+					,@IsLost
+					,@Type_ID
+					,@Publisher_ID
+					,@Papers_no
+					,@Introducer_ID
+					,@EmployeeI_D
+					,@Size
+					,@Price
+					,@Pdf_Link
+					,@Image_ID
+					,@ISBN
+					,@CreatedOn
+					,@CreatedBy
+					,@UpdatedOn
+					,@UpdatedBy
+					,@DeletedOn
+					,@DeletedBy
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Book table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="100" precision="0" scale="0" param="(100)" nulldefault=""/>
+				<parameter name="@Publisher" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@Publish_Date" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsAvailablePdf" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsAvailablePaper" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsBorrowed" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@User_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@BorrowDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Borrow_Times" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@IsLost" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault=""/>
+				<parameter name="@Type_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Publisher_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Papers_no" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Introducer_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@EmployeeI_D" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Size" type="float" direction="Input" size="8" precision="53" scale="0" param="" nulldefault=""/>
+				<parameter name="@Price" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Pdf_Link" type="nvarchar" direction="Input" size="250" precision="0" scale="0" param="(250)" nulldefault=""/>
+				<parameter name="@Image_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@ISBN" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault=""/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault=""/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Book]
+				SET
+					[Name] = @Name
+					,[Publisher] = @Publisher
+					,[Publish_Date] = @Publish_Date
+					,[IsAvailablePdf] = @IsAvailablePdf
+					,[IsAvailablePaper] = @IsAvailablePaper
+					,[IsBorrowed] = @IsBorrowed
+					,[User_ID] = @User_ID
+					,[BorrowDate] = @BorrowDate
+					,[Borrow_Times] = @Borrow_Times
+					,[IsLost] = @IsLost
+					,[Type_ID] = @Type_ID
+					,[Publisher_ID] = @Publisher_ID
+					,[Papers_no] = @Papers_no
+					,[Introducer_ID] = @Introducer_ID
+					,[EmployeeI_D] = @EmployeeI_D
+					,[Size] = @Size
+					,[Price] = @Price
+					,[Pdf_Link] = @Pdf_Link
+					,[Image_ID] = @Image_ID
+					,[ISBN] = @ISBN
+					,[CreatedOn] = @CreatedOn
+					,[CreatedBy] = @CreatedBy
+					,[UpdatedOn] = @UpdatedOn
+					,[UpdatedBy] = @UpdatedBy
+					,[DeletedOn] = @DeletedOn
+					,[DeletedBy] = @DeletedBy
+				WHERE
+[ID] = @ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Book table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Book] WITH (ROWLOCK) 
+				WHERE
+					[ID] = @ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_GetByType_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Type_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[Name],
+					[Publisher],
+					[Publish_Date],
+					[IsAvailablePdf],
+					[IsAvailablePaper],
+					[IsBorrowed],
+					[User_ID],
+					[BorrowDate],
+					[Borrow_Times],
+					[IsLost],
+					[Type_ID],
+					[Publisher_ID],
+					[Papers_no],
+					[Introducer_ID],
+					[EmployeeI_D],
+					[Size],
+					[Price],
+					[Pdf_Link],
+					[Image_ID],
+					[ISBN],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Book]
+				WHERE
+					[Type_ID] = @Type_ID
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_GetByEmployeeI_D" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@EmployeeI_D" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[Name],
+					[Publisher],
+					[Publish_Date],
+					[IsAvailablePdf],
+					[IsAvailablePaper],
+					[IsBorrowed],
+					[User_ID],
+					[BorrowDate],
+					[Borrow_Times],
+					[IsLost],
+					[Type_ID],
+					[Publisher_ID],
+					[Papers_no],
+					[Introducer_ID],
+					[EmployeeI_D],
+					[Size],
+					[Price],
+					[Pdf_Link],
+					[Image_ID],
+					[ISBN],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Book]
+				WHERE
+					[EmployeeI_D] = @EmployeeI_D
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_GetByImage_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Image_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[Name],
+					[Publisher],
+					[Publish_Date],
+					[IsAvailablePdf],
+					[IsAvailablePaper],
+					[IsBorrowed],
+					[User_ID],
+					[BorrowDate],
+					[Borrow_Times],
+					[IsLost],
+					[Type_ID],
+					[Publisher_ID],
+					[Papers_no],
+					[Introducer_ID],
+					[EmployeeI_D],
+					[Size],
+					[Price],
+					[Pdf_Link],
+					[Image_ID],
+					[ISBN],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Book]
+				WHERE
+					[Image_ID] = @Image_ID
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_GetByIntroducer_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Introducer_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[Name],
+					[Publisher],
+					[Publish_Date],
+					[IsAvailablePdf],
+					[IsAvailablePaper],
+					[IsBorrowed],
+					[User_ID],
+					[BorrowDate],
+					[Borrow_Times],
+					[IsLost],
+					[Type_ID],
+					[Publisher_ID],
+					[Papers_no],
+					[Introducer_ID],
+					[EmployeeI_D],
+					[Size],
+					[Price],
+					[Pdf_Link],
+					[Image_ID],
+					[ISBN],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Book]
+				WHERE
+					[Introducer_ID] = @Introducer_ID
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_GetByPublisher_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Publisher_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[Name],
+					[Publisher],
+					[Publish_Date],
+					[IsAvailablePdf],
+					[IsAvailablePaper],
+					[IsBorrowed],
+					[User_ID],
+					[BorrowDate],
+					[Borrow_Times],
+					[IsLost],
+					[Type_ID],
+					[Publisher_ID],
+					[Papers_no],
+					[Introducer_ID],
+					[EmployeeI_D],
+					[Size],
+					[Price],
+					[Pdf_Link],
+					[Image_ID],
+					[ISBN],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Book]
+				WHERE
+					[Publisher_ID] = @Publisher_ID
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_GetByID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[Name],
+					[Publisher],
+					[Publish_Date],
+					[IsAvailablePdf],
+					[IsAvailablePaper],
+					[IsBorrowed],
+					[User_ID],
+					[BorrowDate],
+					[Borrow_Times],
+					[IsLost],
+					[Type_ID],
+					[Publisher_ID],
+					[Papers_no],
+					[Introducer_ID],
+					[EmployeeI_D],
+					[Size],
+					[Price],
+					[Pdf_Link],
+					[Image_ID],
+					[ISBN],
+					[CreatedOn],
+					[CreatedBy],
+					[UpdatedOn],
+					[UpdatedBy],
+					[DeletedOn],
+					[DeletedBy]
+				FROM
+					[dbo].[Book]
+				WHERE
+					[ID] = @ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Book_GetByAuthor_IDFromBook_Author" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records through a junction table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Author_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+SELECT dbo.[Book].[ID]
+       ,dbo.[Book].[Name]
+       ,dbo.[Book].[Publisher]
+       ,dbo.[Book].[Publish_Date]
+       ,dbo.[Book].[IsAvailablePdf]
+       ,dbo.[Book].[IsAvailablePaper]
+       ,dbo.[Book].[IsBorrowed]
+       ,dbo.[Book].[User_ID]
+       ,dbo.[Book].[BorrowDate]
+       ,dbo.[Book].[Borrow_Times]
+       ,dbo.[Book].[IsLost]
+       ,dbo.[Book].[Type_ID]
+       ,dbo.[Book].[Publisher_ID]
+       ,dbo.[Book].[Papers_no]
+       ,dbo.[Book].[Introducer_ID]
+       ,dbo.[Book].[EmployeeI_D]
+       ,dbo.[Book].[Size]
+       ,dbo.[Book].[Price]
+       ,dbo.[Book].[Pdf_Link]
+       ,dbo.[Book].[Image_ID]
+       ,dbo.[Book].[ISBN]
+       ,dbo.[Book].[CreatedOn]
+       ,dbo.[Book].[CreatedBy]
+       ,dbo.[Book].[UpdatedOn]
+       ,dbo.[Book].[UpdatedBy]
+       ,dbo.[Book].[DeletedOn]
+       ,dbo.[Book].[DeletedBy]
+  FROM dbo.[Book]
+ WHERE EXISTS (SELECT 1
+                 FROM dbo.[Book_Author] 
+                WHERE dbo.[Book_Author].[Author_ID] = @Author_ID
+                  AND dbo.[Book_Author].[Book_ID] = dbo.[Book].[ID]
+                  )
+				SELECT @@ROWCOUNT			
+				]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Book table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Name" type="nvarchar" direction="Input" size="100" precision="0" scale="0" param="(100)" nulldefault="null"/>
+				<parameter name="@Publisher" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@Publish_Date" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@IsAvailablePdf" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@IsAvailablePaper" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@IsBorrowed" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@User_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@BorrowDate" type="date" direction="Input" size="3" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Borrow_Times" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@IsLost" type="bit" direction="Input" size="1" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Type_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Publisher_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Papers_no" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Introducer_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@EmployeeI_D" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Size" type="float" direction="Input" size="8" precision="53" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Price" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Pdf_Link" type="nvarchar" direction="Input" size="250" precision="0" scale="0" param="(250)" nulldefault="null"/>
+				<parameter name="@Image_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ISBN" type="nvarchar" direction="Input" size="50" precision="0" scale="0" param="(50)" nulldefault="null"/>
+				<parameter name="@CreatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@CreatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@UpdatedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@UpdatedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@DeletedOn" type="datetime" direction="Input" size="8" precision="23" scale="3" param="" nulldefault="null"/>
+				<parameter name="@DeletedBy" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Publisher]
+	, [Publish_Date]
+	, [IsAvailablePdf]
+	, [IsAvailablePaper]
+	, [IsBorrowed]
+	, [User_ID]
+	, [BorrowDate]
+	, [Borrow_Times]
+	, [IsLost]
+	, [Type_ID]
+	, [Publisher_ID]
+	, [Papers_no]
+	, [Introducer_ID]
+	, [EmployeeI_D]
+	, [Size]
+	, [Price]
+	, [Pdf_Link]
+	, [Image_ID]
+	, [ISBN]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Book]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([Name] = @Name OR @Name IS NULL)
+	AND ([Publisher] = @Publisher OR @Publisher IS NULL)
+	AND ([Publish_Date] = @Publish_Date OR @Publish_Date IS NULL)
+	AND ([IsAvailablePdf] = @IsAvailablePdf OR @IsAvailablePdf IS NULL)
+	AND ([IsAvailablePaper] = @IsAvailablePaper OR @IsAvailablePaper IS NULL)
+	AND ([IsBorrowed] = @IsBorrowed OR @IsBorrowed IS NULL)
+	AND ([User_ID] = @User_ID OR @User_ID IS NULL)
+	AND ([BorrowDate] = @BorrowDate OR @BorrowDate IS NULL)
+	AND ([Borrow_Times] = @Borrow_Times OR @Borrow_Times IS NULL)
+	AND ([IsLost] = @IsLost OR @IsLost IS NULL)
+	AND ([Type_ID] = @Type_ID OR @Type_ID IS NULL)
+	AND ([Publisher_ID] = @Publisher_ID OR @Publisher_ID IS NULL)
+	AND ([Papers_no] = @Papers_no OR @Papers_no IS NULL)
+	AND ([Introducer_ID] = @Introducer_ID OR @Introducer_ID IS NULL)
+	AND ([EmployeeI_D] = @EmployeeI_D OR @EmployeeI_D IS NULL)
+	AND ([Size] = @Size OR @Size IS NULL)
+	AND ([Price] = @Price OR @Price IS NULL)
+	AND ([Pdf_Link] = @Pdf_Link OR @Pdf_Link IS NULL)
+	AND ([Image_ID] = @Image_ID OR @Image_ID IS NULL)
+	AND ([ISBN] = @ISBN OR @ISBN IS NULL)
+	AND ([CreatedOn] = @CreatedOn OR @CreatedOn IS NULL)
+	AND ([CreatedBy] = @CreatedBy OR @CreatedBy IS NULL)
+	AND ([UpdatedOn] = @UpdatedOn OR @UpdatedOn IS NULL)
+	AND ([UpdatedBy] = @UpdatedBy OR @UpdatedBy IS NULL)
+	AND ([DeletedOn] = @DeletedOn OR @DeletedOn IS NULL)
+	AND ([DeletedBy] = @DeletedBy OR @DeletedBy IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [Name]
+	, [Publisher]
+	, [Publish_Date]
+	, [IsAvailablePdf]
+	, [IsAvailablePaper]
+	, [IsBorrowed]
+	, [User_ID]
+	, [BorrowDate]
+	, [Borrow_Times]
+	, [IsLost]
+	, [Type_ID]
+	, [Publisher_ID]
+	, [Papers_no]
+	, [Introducer_ID]
+	, [EmployeeI_D]
+	, [Size]
+	, [Price]
+	, [Pdf_Link]
+	, [Image_ID]
+	, [ISBN]
+	, [CreatedOn]
+	, [CreatedBy]
+	, [UpdatedOn]
+	, [UpdatedBy]
+	, [DeletedOn]
+	, [DeletedBy]
+    FROM
+	[dbo].[Book]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([Name] = @Name AND @Name is not null)
+	OR ([Publisher] = @Publisher AND @Publisher is not null)
+	OR ([Publish_Date] = @Publish_Date AND @Publish_Date is not null)
+	OR ([IsAvailablePdf] = @IsAvailablePdf AND @IsAvailablePdf is not null)
+	OR ([IsAvailablePaper] = @IsAvailablePaper AND @IsAvailablePaper is not null)
+	OR ([IsBorrowed] = @IsBorrowed AND @IsBorrowed is not null)
+	OR ([User_ID] = @User_ID AND @User_ID is not null)
+	OR ([BorrowDate] = @BorrowDate AND @BorrowDate is not null)
+	OR ([Borrow_Times] = @Borrow_Times AND @Borrow_Times is not null)
+	OR ([IsLost] = @IsLost AND @IsLost is not null)
+	OR ([Type_ID] = @Type_ID AND @Type_ID is not null)
+	OR ([Publisher_ID] = @Publisher_ID AND @Publisher_ID is not null)
+	OR ([Papers_no] = @Papers_no AND @Papers_no is not null)
+	OR ([Introducer_ID] = @Introducer_ID AND @Introducer_ID is not null)
+	OR ([EmployeeI_D] = @EmployeeI_D AND @EmployeeI_D is not null)
+	OR ([Size] = @Size AND @Size is not null)
+	OR ([Price] = @Price AND @Price is not null)
+	OR ([Pdf_Link] = @Pdf_Link AND @Pdf_Link is not null)
+	OR ([Image_ID] = @Image_ID AND @Image_ID is not null)
+	OR ([ISBN] = @ISBN AND @ISBN is not null)
+	OR ([CreatedOn] = @CreatedOn AND @CreatedOn is not null)
+	OR ([CreatedBy] = @CreatedBy AND @CreatedBy is not null)
+	OR ([UpdatedOn] = @UpdatedOn AND @UpdatedOn is not null)
+	OR ([UpdatedBy] = @UpdatedBy AND @UpdatedBy is not null)
+	OR ([DeletedOn] = @DeletedOn AND @DeletedOn is not null)
+	OR ([DeletedBy] = @DeletedBy AND @DeletedBy is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Book_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Book table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [ID] )
+				SELECT TOP {3} [ID]
+				FROM [dbo].[Book] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Name], O.[Publisher], O.[Publish_Date], O.[IsAvailablePdf], O.[IsAvailablePaper], O.[IsBorrowed], O.[User_ID], O.[BorrowDate], O.[Borrow_Times], O.[IsLost], O.[Type_ID], O.[Publisher_ID], O.[Papers_no], O.[Introducer_ID], O.[EmployeeI_D], O.[Size], O.[Price], O.[Pdf_Link], O.[Image_ID], O.[ISBN], O.[CreatedOn], O.[CreatedBy], O.[UpdatedOn], O.[UpdatedBy], O.[DeletedOn], O.[DeletedBy]
+				FROM
+				    [dbo].[Book] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[ID] = PageIndex.[ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Book] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Book_Author_Get_List" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets all records from the Book_Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				SELECT
+					[ID],
+					[Book_ID],
+					[Author_ID]
+				FROM
+					[dbo].[Book_Author]
+					
+				SELECT @@ROWCOUNT
+			]]></body>
+		</procedure>
+		
+		
+		<procedure owner="dbo" name="Book_Author_GetPaged" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Book_Author table passing page index and page count parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@WhereClause" type="varchar" direction="Input" size="8000" precision="0" scale="0" param="(8000)" />
+				<parameter name="@OrderBy" type="varchar" direction="Input" size="2000" precision="0" scale="0" param="(2000)"/>
+				<parameter name="@PageIndex" type="int" direction="Input" size="0" precision="10" scale="0" />
+				<parameter name="@PageSize" type="int" direction="Input" size="0" precision="10" scale="0" /> 
+			</parameters>
+			<body><![CDATA[
+				
+				BEGIN
+				DECLARE @PageLowerBound int
+				DECLARE @PageUpperBound int
+				
+				-- Set the page bounds
+				SET @PageLowerBound = @PageSize * @PageIndex
+				SET @PageUpperBound = @PageLowerBound + @PageSize
+
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [Book_ID] int, [Author_ID] int 
+				)
+				
+				-- Insert into the temp table
+				DECLARE @SQL AS nvarchar(4000)
+				SET @SQL = 'INSERT INTO #PageIndex ([Book_ID], [Author_ID])'
+				SET @SQL = @SQL + ' SELECT'
+				SET @SQL = @SQL + ' [Book_ID], [Author_ID]'
+				SET @SQL = @SQL + ' FROM [dbo].[Book_Author]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				IF LEN(@OrderBy) > 0
+				BEGIN
+					SET @SQL = @SQL + ' ORDER BY ' + @OrderBy
+				END
+				
+				-- Only get the number of rows needed here.
+				SET ROWCOUNT @PageUpperBound
+				
+				-- Populate the temp table
+				EXEC sp_executesql @SQL
+
+				-- Reset Rowcount back to all
+				SET ROWCOUNT 0
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Book_ID], O.[Author_ID]
+				FROM
+				    [dbo].[Book_Author] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > @PageLowerBound
+					AND O.[Book_ID] = PageIndex.[Book_ID]
+					AND O.[Author_ID] = PageIndex.[Author_ID]
+				ORDER BY
+				    PageIndex.IndexId
+                
+				-- get row count
+				SET @SQL = 'SELECT COUNT(1) AS TotalRowCount'
+				SET @SQL = @SQL + ' FROM [dbo].[Book_Author]'
+				IF LEN(@WhereClause) > 0
+				BEGIN
+					SET @SQL = @SQL + ' WHERE ' + @WhereClause
+				END
+				EXEC sp_executesql @SQL
+			
+				END
+			]]></body>
+		</procedure>
+		
+		<procedure owner="dbo" name="Book_Author_Insert" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Inserts a record into the Book_Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Output" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Author_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				INSERT INTO [dbo].[Book_Author]
+					(
+					[Book_ID]
+					,[Author_ID]
+					)
+				VALUES
+					(
+					@Book_ID
+					,@Author_ID
+					)
+				-- Get the identity value
+				SET @ID = SCOPE_IDENTITY()
+									
+							
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Author_Update" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Updates a record in the Book_Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@OriginalBook_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Author_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@OriginalAuthor_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				
+				
+				-- Modify the updatable columns
+				UPDATE
+					[dbo].[Book_Author]
+				SET
+					[Book_ID] = @Book_ID
+					,[Author_ID] = @Author_ID
+				WHERE
+[Book_ID] = @OriginalBook_ID 
+AND [Author_ID] = @OriginalAuthor_ID 
+				
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Author_Delete" grant="">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Deletes a record in the Book_Author table
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Author_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				DELETE FROM [dbo].[Book_Author] WITH (ROWLOCK) 
+				WHERE
+					[Book_ID] = @Book_ID
+					AND [Author_ID] = @Author_ID
+					
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Author_GetByAuthor_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book_Author table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Author_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[Book_ID],
+					[Author_ID]
+				FROM
+					[dbo].[Book_Author]
+				WHERE
+					[Author_ID] = @Author_ID
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Author_GetByBook_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book_Author table through a foreign key
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SET ANSI_NULLS OFF
+				
+				SELECT
+					[ID],
+					[Book_ID],
+					[Author_ID]
+				FROM
+					[dbo].[Book_Author]
+				WHERE
+					[Book_ID] = @Book_ID
+				
+				SELECT @@ROWCOUNT
+				SET ANSI_NULLS ON
+			]]></body>
+		</procedure>
+		<procedure owner="dbo" name="Book_Author_GetByBook_IDAuthor_ID" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Select records from the Book_Author table through an index
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+				<parameter name="@Author_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault=""/>
+			</parameters>
+			<body><![CDATA[
+				SELECT
+					[ID],
+					[Book_ID],
+					[Author_ID]
+				FROM
+					[dbo].[Book_Author]
+				WHERE
+					[Book_ID] = @Book_ID
+					AND [Author_ID] = @Author_ID
+				SELECT @@ROWCOUNT
+					
+			]]></body>
+			
+		</procedure>
+		<procedure owner="dbo" name="Book_Author_Find" >
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Finds records in the Book_Author table passing nullable parameters
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters>
+				<parameter name="@SearchUsingOR" type="bit" direction="Input" size="0" precision="1" scale="0" param="" nulldefault="null"/>
+				<parameter name="@ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Book_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+				<parameter name="@Author_ID" type="int" direction="Input" size="4" precision="10" scale="0" param="" nulldefault="null"/>
+			</parameters>
+			<body><![CDATA[
+				
+  IF ISNULL(@SearchUsingOR, 0) <> 1
+  BEGIN
+    SELECT
+	  [ID]
+	, [Book_ID]
+	, [Author_ID]
+    FROM
+	[dbo].[Book_Author]
+    WHERE 
+	 ([ID] = @ID OR @ID IS NULL)
+	AND ([Book_ID] = @Book_ID OR @Book_ID IS NULL)
+	AND ([Author_ID] = @Author_ID OR @Author_ID IS NULL)
+						
+  END
+  ELSE
+  BEGIN
+    SELECT
+	  [ID]
+	, [Book_ID]
+	, [Author_ID]
+    FROM
+	[dbo].[Book_Author]
+    WHERE 
+	 ([ID] = @ID AND @ID is not null)
+	OR ([Book_ID] = @Book_ID AND @Book_ID is not null)
+	OR ([Author_ID] = @Author_ID AND @Author_ID is not null)
+	SELECT @@ROWCOUNT			
+  END
+				]]></body>
+		</procedure>
+
+		
+		<procedure owner="dbo" name="Book_Author_Find_Dynamic"  skip="true">
+			<comment><![CDATA[/*
+----------------------------------------------------------------------------------------------------
+
+-- Created By:  ()
+-- Purpose: Gets records from the Book_Author table using a dynamically generated query.
+----------------------------------------------------------------------------------------------------
+*/
+]]></comment>
+			<parameters/>
+			<body><![CDATA[
+				
+				BEGIN
+				
+				-- Create a temp table to store the select results
+				CREATE TABLE #PageIndex
+				(
+				    [IndexId] int IDENTITY (1, 1) NOT NULL,
+				    [Book_ID] int, [Author_ID] int 
+				)
+				
+				-- Insert into the temp table
+				INSERT INTO #PageIndex ( [Book_ID], [Author_ID] )
+				SELECT TOP {3} [Book_ID], [Author_ID]
+				FROM [dbo].[Book_Author] {0}
+				ORDER BY {1}
+				
+				-- Return paged results
+				SELECT O.[ID], O.[Book_ID], O.[Author_ID]
+				FROM
+				    [dbo].[Book_Author] O,
+				    #PageIndex PageIndex
+				WHERE
+				    PageIndex.IndexId > {2}
+				    AND O.[Book_ID] = PageIndex.[Book_ID]
+				    AND O.[Author_ID] = PageIndex.[Author_ID]
+				ORDER BY
+				    PageIndex.IndexId
+				
+
+				-- get total count
+				SELECT COUNT(*) AS TotalRowCount FROM [dbo].[Book_Author] {0};
+				
+				DROP TABLE #PageIndex
+				END
+			]]></body>
+		</procedure>
+		
+</procedures>
+</root>

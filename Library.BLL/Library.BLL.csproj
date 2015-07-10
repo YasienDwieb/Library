@@ -1,0 +1,410 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="12.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>12.0.21005.1</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{BB0CD1A7-355F-4D50-97AF-B01428E93288}</ProjectGuid>
+    <ProjectType>Local</ProjectType>
+	<TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <OutputType>Library</OutputType>
+    <ApplicationIcon>
+	</ApplicationIcon>
+    <AssemblyKeyContainerName>
+	</AssemblyKeyContainerName>
+    <AssemblyName>Library.BLL</AssemblyName>
+    <AssemblyOriginatorKeyFile>..\Library.snk</AssemblyOriginatorKeyFile>
+	<SignAssembly>false</SignAssembly>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <RootNamespace>Library.BLL</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject></StartupObject>
+    <FileUpgradeFlags></FileUpgradeFlags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>Library.BLL.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>Library.BLL.xml</DocumentationFile>
+	 <DebugType>pdbonly</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'GenerateDebug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>Library.BLL.xml</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System"/>
+	<Reference Include="System.Core">
+		<RequiredTargetFramework>4.5</RequiredTargetFramework>
+	</Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations"/>
+    <Reference Include="System.Web"/>
+    <Reference Include="System.Data"/>
+    <Reference Include="System.Design"/>
+    <Reference Include="System.Xml"/>
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Drawing" />
+	<Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>    
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching.Cryptography, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Microsoft.Practices.EnterpriseLibrary.Caching.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>    
+     
+	
+	
+	
+	
+    
+    	
+	
+	
+	
+	</ItemGroup>
+	
+		
+	<!-- Custom code folder: C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\App_Code -->
+	<ItemGroup>	
+		<Folder Include="App_Code\" />
+        <Compile Include="App_Code\**\*.cs">
+          <SubType>Code</SubType>
+        </Compile>		
+	</ItemGroup>
+
+	<!-- Include any user files -->
+	<ItemGroup>	
+		<Compile Include="**\*.user.*" Exclude="**\*.csproj.user;**\.svn\**" >
+          <SubType>Code</SubType>
+        </Compile>		
+	</ItemGroup>
+	
+	<ItemGroup>
+			<Compile Include="Author.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="AuthorBase.generated.cs">
+			  <DependentUpon>Author.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IAuthor.cs">
+			  <DependentUpon>Author.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="Book.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="BookBase.generated.cs">
+			  <DependentUpon>Book.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IBook.cs">
+			  <DependentUpon>Book.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="Book_Author.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Book_AuthorBase.generated.cs">
+			  <DependentUpon>Book_Author.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IBook_Author.cs">
+			  <DependentUpon>Book_Author.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="BookImage.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="BookImageBase.generated.cs">
+			  <DependentUpon>BookImage.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IBookImage.cs">
+			  <DependentUpon>BookImage.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="BookType.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="BookTypeBase.generated.cs">
+			  <DependentUpon>BookType.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IBookType.cs">
+			  <DependentUpon>BookType.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="Course.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="CourseBase.generated.cs">
+			  <DependentUpon>Course.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="ICourse.cs">
+			  <DependentUpon>Course.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="Employee.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EmployeeBase.generated.cs">
+			  <DependentUpon>Employee.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IEmployee.cs">
+			  <DependentUpon>Employee.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="Introducer.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IntroducerBase.generated.cs">
+			  <DependentUpon>Introducer.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IIntroducer.cs">
+			  <DependentUpon>Introducer.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="Publisher.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="PublisherBase.generated.cs">
+			  <DependentUpon>Publisher.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IPublisher.cs">
+			  <DependentUpon>Publisher.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="Users.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="UsersBase.generated.cs">
+			  <DependentUpon>Users.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IUsers.cs">
+			  <DependentUpon>Users.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+			<Compile Include="UserType.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="UserTypeBase.generated.cs">
+			  <DependentUpon>UserType.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IUserType.cs">
+			  <DependentUpon>UserType.cs</DependentUpon>
+			  <SubType>Code</SubType>
+			</Compile>
+		
+		
+		<Compile Include="..\AssemblyInfo.cs">
+		  <SubType>Code</SubType>
+		</Compile>
+			
+			<Compile Include="IEntity.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IEntityId.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IEntityKey.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityBase.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityBaseCore.generated.cs">
+			  <SubType>Code</SubType>
+			  <DependentUpon>EntityBase.cs</DependentUpon>
+			</Compile>
+			<Compile Include="EntityKeyBase.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityKeyBaseCore.generated.cs">
+			  <SubType>Code</SubType>
+			  <DependentUpon>EntityKeyBase.cs</DependentUpon>
+			</Compile>
+			<Compile Include="ListBase.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="TList.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+            <Compile Include="WeakRefDictionary.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Views\VList.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityFilter.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityPropertyComparer.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityHelper.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityUtil.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IEntityFactory.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityFactoryBase.cs">
+			  <SubType>Code</SubType>
+			</Compile>			
+			<Compile Include="EntityFactory.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="EntityLocator.cs">
+			  <SubType>Code</SubType>
+			</Compile>		
+			<Compile Include="EntityManager.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="IEntityCacheItem.cs">
+			  <SubType>Code</SubType>
+			</Compile>		
+			<Compile Include="EntityCache.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="GenericTypeConverter.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Validation\BrokenRule.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Validation\BrokenRulesList.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Validation\CommonRules.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Validation\ValidationRuleArgs.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Validation\ValidationRuleHandler.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Validation\ValidationRuleInfo.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+			<Compile Include="Validation\ValidationRules.cs">
+			  <SubType>Code</SubType>
+			</Compile>
+
+		
+		
+
+		
+		
+		
+		
+		 <AppDesigner Include="Properties\" />
+	</ItemGroup>
+	
+	
+	
+	
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSHARP.Targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+	<PostBuildEvent>
+	</PostBuildEvent>
+  </PropertyGroup>
+
+</Project>

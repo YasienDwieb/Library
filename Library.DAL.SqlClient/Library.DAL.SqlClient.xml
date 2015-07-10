@@ -1,0 +1,2619 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Library.DAL.SqlClient</name>
+    </assembly>
+    <members>
+        <member name="T:Library.DAL.SqlClient.SqlAuthorProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Author"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlAuthorProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Author"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlAuthorProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlAuthorProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.GetByBook_IDFromBook_Author(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets Author objects from the datasource by Book_ID in the
+            	Book_Author table. Table Author is related to table Book
+            	through the (M:N) relationship defined in the Book_Author table.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_book_ID"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns a <c>TList</c> of Author objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Author objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Author objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Author objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Author objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Author index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Author"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Author})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Author object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Author)">
+            <summary>
+            	Inserts a Library.BLL.Author object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Author object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Author object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Author)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Author object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Author object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlAuthorProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlAuthorProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlAuthorProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlAuthorProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlAuthorProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBookProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Book"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBookProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Book"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetByAuthor_IDFromBook_Author(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets Book objects from the datasource by Author_ID in the
+            	Book_Author table. Table Book is related to table Author
+            	through the (M:N) relationship defined in the Book_Author table.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_author_ID"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns a <c>TList</c> of Book objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetByType_ID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Book_BookType key.
+            	FK_Book_BookType Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_type_ID"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetByEmployeeI_D(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Book_Employee key.
+            	FK_Book_Employee Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_employeeI_D"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetByImage_ID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Book_Image key.
+            	FK_Book_Image Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_image_ID"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetByIntroducer_ID(Library.DAL.TransactionManager,System.Nullable{System.Int32},System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Book_Introducer key.
+            	FK_Book_Introducer Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_introducer_ID"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetByPublisher_ID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Book_Publisher key.
+            	FK_Book_Publisher Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_publisher_ID"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Book index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Book"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Book})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Book object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Book)">
+            <summary>
+            	Inserts a Library.BLL.Book object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Book object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Book object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Book)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Book object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Book object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBook_AuthorProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Book_Author"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBook_AuthorProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Book_Author"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBook_AuthorProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBook_AuthorProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.Delete(Library.DAL.TransactionManager,System.Int32,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_book_ID">. Primary Key.</param>	
+            <param name="_author_ID">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Book_Author objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Book_Author objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book_Author objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book_Author objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.GetByAuthor_ID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Book_Author_Author key.
+            	FK_Book_Author_Author Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_author_ID"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book_Author objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.GetByBook_ID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Book_Author_Book key.
+            	FK_Book_Author_Book Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_book_ID"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Book_Author objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.GetByBook_IDAuthor_ID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Book_Author index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_book_ID"></param>
+            <param name="_author_ID"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Book_Author"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Book_Author})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Book_Author object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Book_Author)">
+            <summary>
+            	Inserts a Library.BLL.Book_Author object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Book_Author object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Book_Author object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Book_Author)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Book_Author object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Book_Author object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBook_AuthorProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBook_AuthorProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBook_AuthorProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBookImageProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.BookImage"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBookImageProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.BookImage"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookImageProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookImageProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.BookImage objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.BookImage objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.BookImage objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.BookImage objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Image index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.BookImage"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.BookImage})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.BookImage object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.BookImage)">
+            <summary>
+            	Inserts a Library.BLL.BookImage object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.BookImage object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.BookImage object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.BookImage)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.BookImage object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.BookImage object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookImageProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookImageProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookImageProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookImageProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookImageProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBookTypeProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.BookType"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlBookTypeProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.BookType"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookTypeProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookTypeProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.BookType objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.BookType objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.BookType objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.BookType objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_BookType index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.BookType"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.BookType})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.BookType object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.BookType)">
+            <summary>
+            	Inserts a Library.BLL.BookType object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.BookType object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.BookType object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.BookType)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.BookType object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.BookType object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookTypeProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookTypeProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlBookTypeProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlBookTypeProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlBookTypeProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlCourseProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Course"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlCourseProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Course"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlCourseProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlCourseProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Course objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Course objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Course objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Course objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Course index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Course"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Course})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Course object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Course)">
+            <summary>
+            	Inserts a Library.BLL.Course object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Course object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Course object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Course)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Course object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Course object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlCourseProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlCourseProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlCourseProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlCourseProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlCourseProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlEmployeeProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Employee"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlEmployeeProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Employee"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlEmployeeProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlEmployeeProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Employee objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Employee objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Employee objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Employee objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.GetByUserName(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the IX_Employee index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_userName"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Employee"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Employee_1 index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Employee"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Employee})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Employee object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Employee)">
+            <summary>
+            	Inserts a Library.BLL.Employee object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Employee object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Employee object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Employee)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Employee object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Employee object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlEmployeeProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlEmployeeProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlEmployeeProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlEmployeeProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlEmployeeProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlIntroducerProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Introducer"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlIntroducerProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Introducer"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlIntroducerProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlIntroducerProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Introducer objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Introducer objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Introducer objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Introducer objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Introducer index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Introducer"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Introducer})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Introducer object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Introducer)">
+            <summary>
+            	Inserts a Library.BLL.Introducer object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Introducer object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Introducer object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Introducer)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Introducer object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Introducer object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlIntroducerProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlIntroducerProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlIntroducerProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlIntroducerProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlIntroducerProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlPublisherProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Publisher"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlPublisherProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Publisher"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlPublisherProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlPublisherProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Publisher objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Publisher objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Publisher objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Publisher objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Publishers index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Publisher"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Publisher})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Publisher object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Publisher)">
+            <summary>
+            	Inserts a Library.BLL.Publisher object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Publisher object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Publisher object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Publisher)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Publisher object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Publisher object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlPublisherProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlPublisherProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlPublisherProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlPublisherProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlPublisherProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlUsersProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Users"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlUsersProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.Users"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlUsersProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlUsersProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.Users objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.Users objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Users objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Users objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.GetByUserType_ID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the FK_Users_UserType key.
+            	FK_Users_UserType Description: 
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_userType_ID"></param>
+            <param name="count">out parameter to get total records for query</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.Users objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.GetByUserName(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the IX_Users index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_userName"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Users"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_Users index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.Users"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.Users})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Users object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.Users)">
+            <summary>
+            	Inserts a Library.BLL.Users object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Users object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.Users object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.Users)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.Users object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.Users object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlUsersProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlUsersProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlUsersProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUsersProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlUsersProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlUserTypeProvider">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.UserType"/> entity.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlUserTypeProviderBase">
+            <summary>
+             This class is the SqlClient Data Access Logic Component implementation for the <see cref="T:Library.BLL.UserType"/> entity.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlUserTypeProviderBase"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlUserTypeProviderBase"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we should use stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.Delete(Library.DAL.TransactionManager,System.Int32)">
+            <summary>
+            	Deletes a row from the DataSource.
+            </summary>
+            <param name="_iD">. Primary Key.</param>	
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks>Deletes based on primary key(s).</remarks>
+            <returns>Returns true if operation suceeded.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.Find(Library.DAL.TransactionManager,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows meeting the whereClause condition from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks>Operators must be capitalized (OR, AND).</remarks>
+            <returns>Returns a typed collection of Library.BLL.UserType objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.Find(Library.DAL.TransactionManager,Library.DAL.IFilterParameterCollection,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Returns rows from the DataSource that meet the parameter conditions.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="parameters">A collection of <see cref="T:Library.DAL.SqlFilterParameter"/> objects.</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <returns>Returns a typed collection of Library.BLL.UserType objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.GetAll(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets All rows from the DataSource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out. The number of rows that match this query.</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.UserType objects.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.GetPaged(Library.DAL.TransactionManager,System.String,System.String,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            Gets a page of rows from the DataSource.
+            </summary>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">Number of rows in the DataSource.</param>
+            <param name="whereClause">Specifies the condition for the rows returned by a query (Name='John Doe', Name='John Doe' AND Id='1', Name='John Doe' OR Id='1').</param>
+            <param name="orderBy">Specifies the sort criteria for the rows in the DataSource (Name ASC; BirthDay DESC, Name ASC);</param>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <remarks></remarks>
+            <returns>Returns a typed collection of Library.BLL.UserType objects.</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.GetByID(Library.DAL.TransactionManager,System.Int32,System.Int32,System.Int32,System.Int32@)">
+            <summary>
+            	Gets rows from the datasource based on the PK_UserTYpe index.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="_iD"></param>
+            <param name="start">Row number at which to start reading.</param>
+            <param name="pageLength">Number of rows to return.</param>
+            <param name="count">out parameter to get total records for query.</param>
+            <returns>Returns an instance of the <see cref="T:Library.BLL.UserType"/> class.</returns>
+            <remarks></remarks>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.BulkInsert(Library.DAL.TransactionManager,Library.BLL.TList{Library.BLL.UserType})">
+            <summary>
+            Lets you efficiently bulk insert many entities to the database.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="entities">The entities.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.UserType object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.Insert(Library.DAL.TransactionManager,Library.BLL.UserType)">
+            <summary>
+            	Inserts a Library.BLL.UserType object into the datasource using a transaction.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.UserType object to insert.</param>
+            <remarks>
+            	After inserting into the datasource, the Library.BLL.UserType object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>	
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProviderBase.Update(Library.DAL.TransactionManager,Library.BLL.UserType)">
+            <summary>
+            	Update an existing row in the datasource.
+            </summary>
+            <param name="transactionManager"><see cref="T:Library.DAL.TransactionManager"/> object</param>
+            <param name="entity">Library.BLL.UserType object to update.</param>
+            <remarks>
+            	After updating the datasource, the Library.BLL.UserType object will be updated
+            	to refelect any changes made by the datasource. (ie: identity or computed columns)
+            </remarks>
+            <returns>Returns true if operation is successful.</returns>
+            <exception cref="T:System.Exception">The command could not be executed.</exception>
+            <exception cref="T:System.Data.DataException">The <paramref name="transactionManager"/> is not open.</exception>
+            <exception cref="T:System.Data.Common.DbException">The command could not be executed.</exception>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlUserTypeProviderBase.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlUserTypeProviderBase.UseStoredProcedure">
+            <summary>
+            Gets or sets a value indicating whether to use stored procedures.
+            </summary>
+            <value><c>true</c> if we choose to use use stored procedures; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlUserTypeProviderBase.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlUserTypeProvider.#ctor(System.String,System.Boolean,System.String)">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.SqlUserTypeProvider"/> instance.
+            Uses connection string to connect to datasource.
+            </summary>
+            <param name="connectionString">The connection string to the database.</param>
+            <param name="useStoredProcedure">A boolean value that indicates if we use the stored procedures or embedded queries.</param>
+            <param name="providerInvariantName">Name of the invariant provider use by the DbProviderFactory.</param>
+        </member>
+        <member name="T:Library.DAL.SqlClient.SqlNetTiersProvider">
+            <summary>
+            This class is the Sql implementation of the NetTiersProvider.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.#ctor">
+             <summary>
+             Initializes a new instance of the <see cref="T:Library.DAL.SqlClient.SqlNetTiersProvider"/> class.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.Initialize(System.String,System.Collections.Specialized.NameValueCollection)">
+            <summary>
+            Initializes the provider.
+            </summary>
+            <param name="name">The friendly name of the provider.</param>
+            <param name="config">A collection of the name/value pairs representing the provider-specific attributes specified in the configuration for this provider.</param>
+            <exception cref="T:System.ArgumentNullException">The name of the provider is null.</exception>
+            <exception cref="T:System.InvalidOperationException">An attempt is made to call <see cref="M:System.Configuration.Provider.ProviderBase.Initialize(System.String,System.Collections.Specialized.NameValueCollection)"></see> on a provider after the provider has already been initialized.</exception>
+            <exception cref="T:System.ArgumentException">The name of the provider has a length of zero.</exception>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.CreateTransaction">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.TransactionManager"/> instance from the current datasource.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteNonQuery(System.String,System.Object[])">
+            <summary>
+            Executes the non query.
+            </summary>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteNonQuery(Library.DAL.TransactionManager,System.String,System.Object[])">
+            <summary>
+            Executes the non query.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteNonQuery(System.Data.Common.DbCommand)">
+            <summary>
+            Executes the non query.
+            </summary>
+            <param name="commandWrapper">The command wrapper.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteNonQuery(Library.DAL.TransactionManager,System.Data.Common.DbCommand)">
+            <summary>
+            Executes the non query.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandWrapper">The command wrapper.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteNonQuery(System.Data.CommandType,System.String)">
+            <summary>
+            Executes the non query.
+            </summary>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteNonQuery(Library.DAL.TransactionManager,System.Data.CommandType,System.String)">
+            <summary>
+            Executes the non query.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteReader(System.String,System.Object[])">
+            <summary>
+            Executes the reader.
+            </summary>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteReader(Library.DAL.TransactionManager,System.String,System.Object[])">
+            <summary>
+            Executes the reader.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteReader(System.Data.Common.DbCommand)">
+            <summary>
+            Executes the reader.
+            </summary>
+            <param name="commandWrapper">The command wrapper.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteReader(Library.DAL.TransactionManager,System.Data.Common.DbCommand)">
+            <summary>
+            Executes the reader.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandWrapper">The command wrapper.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteReader(System.Data.CommandType,System.String)">
+            <summary>
+            Executes the reader.
+            </summary>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteReader(Library.DAL.TransactionManager,System.Data.CommandType,System.String)">
+            <summary>
+            Executes the reader.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteDataSet(System.String,System.Object[])">
+            <summary>
+            Executes the data set.
+            </summary>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteDataSet(Library.DAL.TransactionManager,System.String,System.Object[])">
+            <summary>
+            Executes the data set.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteDataSet(System.Data.Common.DbCommand)">
+            <summary>
+            Executes the data set.
+            </summary>
+            <param name="commandWrapper">The command wrapper.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteDataSet(Library.DAL.TransactionManager,System.Data.Common.DbCommand)">
+            <summary>
+            Executes the data set.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandWrapper">The command wrapper.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteDataSet(System.Data.CommandType,System.String)">
+            <summary>
+            Executes the data set.
+            </summary>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteDataSet(Library.DAL.TransactionManager,System.Data.CommandType,System.String)">
+            <summary>
+            Executes the data set.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteScalar(System.String,System.Object[])">
+            <summary>
+            Executes the scalar.
+            </summary>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteScalar(Library.DAL.TransactionManager,System.String,System.Object[])">
+            <summary>
+            Executes the scalar.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="storedProcedureName">Name of the stored procedure.</param>
+            <param name="parameterValues">The parameter values.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteScalar(System.Data.Common.DbCommand)">
+            <summary>
+            Executes the scalar.
+            </summary>
+            <param name="commandWrapper">The command wrapper.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteScalar(Library.DAL.TransactionManager,System.Data.Common.DbCommand)">
+            <summary>
+            Executes the scalar.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandWrapper">The command wrapper.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteScalar(System.Data.CommandType,System.String)">
+            <summary>
+            Executes the scalar.
+            </summary>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.SqlNetTiersProvider.ExecuteScalar(Library.DAL.TransactionManager,System.Data.CommandType,System.String)">
+            <summary>
+            Executes the scalar.
+            </summary>
+            <param name="transactionManager">The transaction manager.</param>
+            <param name="commandType">Type of the command.</param>
+            <param name="commandText">The command text.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.UseStoredProcedure">
+            <summary>
+            Gets a value indicating whether to use stored procedure or not.
+            </summary>
+            <value>
+            	<c>true</c> if this repository use stored procedures; otherwise, <c>false</c>.
+            </value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.ConnectionString">
+            <summary>
+            Gets or sets the connection string.
+            </summary>
+            <value>The connection string.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.ProviderInvariantName">
+            <summary>
+            Gets or sets the invariant provider name listed in the DbProviderFactories machine.config section.
+            </summary>
+            <value>The name of the provider invariant.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.IsTransactionSupported">
+            <summary>
+             Indicates if the current <see cref="T:Library.DAL.Bases.NetTiersProvider"/> implementation supports Transacton.
+            </summary>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.IntroducerProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Introducer"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlIntroducerProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlIntroducerProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.AuthorProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Author"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlAuthorProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlAuthorProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.PublisherProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Publisher"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlPublisherProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlPublisherProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.EmployeeProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Employee"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlEmployeeProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlEmployeeProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.UsersProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Users"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlUsersProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlUsersProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.CourseProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Course"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlCourseProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlCourseProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.BookTypeProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.BookType"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBookTypeProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBookTypeProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.BookImageProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.BookImage"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBookImageProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBookImageProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.UserTypeProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.UserType"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlUserTypeProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlUserTypeProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.BookProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Book"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBookProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBookProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.Book_AuthorProvider">
+            <summary>
+             This class is the Data Access Logic Component for the <see cref="T:Library.BLL.Book_Author"/> business entity.
+             It exposes CRUD methods as well as selecting on index, foreign keys and custom stored procedures.
+            </summary>
+             <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBook_AuthorProvider">
+            <summary>
+            Gets the current <see cref="P:Library.DAL.SqlClient.SqlNetTiersProvider.SqlBook_AuthorProvider"/>.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:Library.DAL.SqlClient.StoredProcedureProvider">
+            <summary>
+            Summary description for Procedures.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.StoredProcedureProvider.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.StoredProcedureProvider"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.StoredProcedureProvider.Serialize(System.String)">
+            <summary>
+            Serializes the specified filename.
+            </summary>
+            <param name="filename">Filename.</param>
+        </member>
+        <member name="M:Library.DAL.SqlClient.StoredProcedureProvider.Deserialize">
+            <summary>
+            Deserializes this instance.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.StoredProcedureProvider.GetProcedureBodyFromEmbeddedResource(System.String)">
+            <summary>
+            Get the query text from the embedded xml file.
+            </summary>
+            <param name="name">The name of the query.</param>
+            <returns>the text of the query</returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.StoredProcedureProvider.GetCommandWrapper(Microsoft.Practices.EnterpriseLibrary.Data.Database,System.String,System.Boolean)">
+            <summary>
+            Get the command wrapper, either from the stored procedures or from the embedded queries.
+            </summary>
+            <param name="database">The database instance.</param>
+            <param name="commandName">the name of the sp.</param>
+            <param name="useStoredProcedure">Indicates if we want stored procedure.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Library.DAL.SqlClient.StoredProcedureProvider.GetCommandWrapper(Microsoft.Practices.EnterpriseLibrary.Data.Database,System.String,System.Type,Library.DAL.SqlFilterParameterCollection,System.String,System.Int32,System.Int32)">
+            <summary>
+            Gets the command wrapper for a dynamically generated query and
+            optionally includes server-side paging.
+            </summary>
+            <param name="database"></param>
+            <param name="commandName"></param>
+            <param name="columnEnum"></param>
+            <param name="parameters"></param>
+            <param name="orderBy"></param>
+            <param name="start"></param>
+            <param name="pageLength"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Library.DAL.SqlClient.StoredProcedureProvider.Current">
+            <summary>
+            Gets the current <see cref="T:Library.DAL.SqlClient.StoredProcedureProvider"/> singleton instance.
+            </summary>
+            <value><see cref="T:Library.DAL.SqlClient.StoredProcedureProvider"/></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.StoredProcedureProvider.Procedures">
+            <summary>
+            Gets or sets the procedures.
+            </summary>
+            <value>An <see cref="T:System.Collections.ArrayList"/> of <see cref="T:Library.DAL.SqlClient.Procedure"/> objects.</value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.StoredProcedureProvider.Item(System.String)">
+            <summary>
+            Gets or sets the <see cref="T:Library.DAL.SqlClient.Procedure"/> instance with the specified name.
+            </summary>
+        </member>
+        <member name="P:Library.DAL.SqlClient.StoredProcedureProvider.Item(System.Int32)">
+            <summary>
+            Gets or sets the <see cref="T:Library.DAL.SqlClient.Procedure"/> instance at the specified index.
+            </summary>
+        </member>
+        <member name="T:Library.DAL.SqlClient.Procedure">
+            <summary>
+            Represents a sql query.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.Procedure.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.Procedure"/> instance.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.Procedure.Parameter(System.String)">
+            <summary>
+            Get the parameter from the specified name of the param.
+            </summary>
+            <param name="paramName">Name of the param.</param>
+            <returns></returns>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Procedure.Parameters">
+            <summary>
+            Gets or sets the parameters.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Procedure.Name">
+            <summary>
+            Gets or sets the name.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Procedure.Owner">
+            <summary>
+            Gets or sets the owner.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Procedure.Comment">
+            <summary>
+            Gets or sets the comment.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Procedure.Body">
+            <summary>
+            Gets or sets the body.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:Library.DAL.SqlClient.Parameter">
+            <summary>
+            Respresents a query parameter.
+            </summary>
+        </member>
+        <member name="M:Library.DAL.SqlClient.Parameter.#ctor">
+            <summary>
+            Creates a new <see cref="T:Library.DAL.SqlClient.Parameter"/> instance.
+            </summary>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Parameter.Name">
+            <summary>
+            Gets or sets the Name.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Parameter.SqlType">
+            <summary>
+            Gets or sets the SqlType.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Parameter.Direction">
+            <summary>
+            Gets or sets the Direction.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Parameter.Size">
+            <summary>
+            Gets or sets the size.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Parameter.Precision">
+            <summary>
+            Gets or sets the precision.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:Library.DAL.SqlClient.Parameter.Scale">
+            <summary>
+            Gets or sets the scale.
+            </summary>
+            <value></value>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,13 @@
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Library.BLL.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Library.BLL.pdb
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Library.BLL.xml
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Caching.Cryptography.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Caching.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Common.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Microsoft.Practices.ServiceLocation.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Microsoft.Practices.Unity.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Microsoft.Practices.Unity.Interception.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Security.Cryptography.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\obj\Debug\Library.BLL.csprojResolveAssemblyReference.cache
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\obj\Debug\Library.BLL.dll
+C:\Users\Yasien Dwieb\Desktop\Library2\Library.BLL\obj\Debug\Library.BLL.pdb
